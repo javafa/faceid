@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Face Recognition Test</title>
+<script src="https://code.jquery.com/jquery-3.5.0.min.js"></script>
+</head>
+<body>
+    <h1>Face Recognition Test</h1>
+    
+    <h3>Regist Role Group</h3>
+    <form id="group">
+        <label for="group_id">Roll Group ID:</label>
+        <input type="text" id="group_id" name="group_id"><br/>
+        <label for="group_name">Roll Group Name :</label>
+        <input type="text" id="group_name" name="group_name"><br/>
+        <input type="button" value="Submit" id="submit_group"/>
+    </form>
+
+    <h3>Regist Face</h3>
+    <form id="face">
+        <label for="person_id">Person ID :</label>
+        <input type="text" id="person_id" name="person_id"><br/>
+        <label for="person_name">Person Name :</label>
+        <input type="text" id="person_name" name="person_name"><br/>
+        <label for="img">Image File :</label>
+        <input type="file" id="img" name="img" accept="image/*"><br/>
+        <input type="button" value="Submit" id="submit_face"/>
+    </form>
+
+    <h3>Allow Role to Person</h3>
+    <form id="allow">
+        <label for="person_id">Person ID :</label>
+        <input type="text" id="person_id" name="person_id"><br/>
+        <label for="group_id">Roll Group :</label>
+        <input type="text" id="group_id" name="group_id"><br/>
+        <input type="button" value="Submit" id="submit_allow"/>
+    </form>
+
+    <h3>Identify Face</h3>
+    <form id="identify">
+        <label for="group_id">Roll Group:</label>
+        <input type="text" id="group_id" name="group_id"><br/>
+        <video id="video" name="video" width="640" height="480" autoplay></video><br/>
+        <!-- <canvas id="canvas" name="canvas" width="640" height="480"></canvas><br/>
+        <button id="snap">Take</button><br/> -->
+        <input type="button" value="Submit" id="submit_identify"/>
+    </form>
+</body>
+</html>
+
+<script>
+    var video = document.getElementById('video');
+    // Get access to the camera!
+    if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        // Not adding `{ audio: true }` since we only want video now
+        navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
+            //video.src = window.URL.createObjectURL(stream);
+            video.srcObject = stream;
+            video.play();
+        });
+    }
+
+    $("#submit_group").click(function( event ) {
+        event.preventDefault();
+
+        if($("#group #group_id").val() == ""){
+            alert('please input Group ID!');
+        } else {
+            var url = "/api/group";
+            var data = $("form#group").serializeArray();
+
+            var object = {};
+            for (var i = 0; i < data.length; i++){
+                object[data[i]['name']] = data[i]['value'];
+            }
+            
+            var json_str = JSON.stringify(object);
+
+            $.ajax({
+                url: url,
+                type: "post",
+                accept: "application/json",
+                contentType: "application/json; charset=utf-8",
+                data: json_str,
+                dataType: "json",
+                success: function(data) {
+                    console.log('success--->', data);
+                },
+                error: function(jqXHR,textStatus,errorThrown) {
+                    console.log('fail--->', textStatus);
+                }
+            });
+        }
+    });
+
+    $("#submit_face").click(function( event ) {
+        event.preventDefault();
+        if($("#face #person_id").val() == ""){
+            alert('please input Person ID!');
+        } else if($("#face #img").val() == ""){
+            alert('please attach Image File!');
+        } else {
+            var url = "/api/person";
+            var data = $("form#face").serializeArray();
+
+            console.log("data", data);
+
+            var file = document.querySelector('#face #img');
+            var fileList = file.files ;
+            var reader = new FileReader();
+            reader.readAsDataURL(fileList[0]);
+            
+            reader.onload = function() {
+                var base64data = reader.result;
+                var img_result = base64data.split(',')[1]
+
+                // console.log("data", data);
+                data.push({"name":"img", "value":img_result});
+
+                // json object to json string
+                var object = {};
+                for (var i = 0; i < data.length; i++){
+                    object[data[i]['name']] = data[i]['value'];
+                }
+                
+                var json_str = JSON.stringify(object);
+
+                $.ajax({
+                    url: url,
+                    type: "post",
+                    accept: "application/json",
+                    contentType: "application/json; charset=utf-8",
+                    data: json_str,
+                    dataType: "json",
+                    success: function(data) {
+                        console.log('success--->', data);
+                    },
+                    error: function(jqXHR,textStatus,errorThrown) {
+                        console.log('fail--->', textStatus);
+                    }
+                });
+            }
+        }
+    });
+
+    $("#submit_identify").click(function( event ) {
+        event.preventDefault();
+        if($("#identify #group_id").val() == ""){
+            alert('please input Group ID!');
+        } else {
+
+            var canvas = document.createElement("canvas");
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            canvas.getContext('2d')
+                .drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            var url = "/api/identify";
+
+            var object = {};
+            object["group_id"] = $("#identify #group_id").val()
+
+            object["img"] = canvas.toDataURL().split(',')[1];
+
+            var json_str = JSON.stringify(object);
+
+            // console.log('json_string', json_str)
+
+            $.ajax({
+                url: url,
+                type: "post",
+                accept: "application/json",
+                contentType: "application/json; charset=utf-8",
+                data: json_str,
+                dataType: "json",
+                success: function(data) {
+                    console.log('success--->', data);
+                    for(i in data.objectID_list){
+                        console.log("id->",data.objectID_list[i].objectID);
+                        console.log("distance->",data.objectID_list[i].distance);
+                    }
+                },
+                error: function(jqXHR,textStatus,errorThrown) {
+                    console.log('fail--->', textStatus);
+                }
+            });
+
+        }
+    });
+
+</script>
