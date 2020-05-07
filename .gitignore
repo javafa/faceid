@@ -6,7 +6,6 @@
 *.jpg
 *.png
 *.pth
-*.npy
 
 .idea/
 .vscode/
