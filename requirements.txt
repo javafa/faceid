@@ -1,0 +1,16 @@
+PyQt5
+pillow
+requests
+opencv-python
+bcolz
+matplotlib
+numpy
+pandas
+scikit-learn
+tensorboardX
+tqdm
+
+fastapi
+uvicorn
+sqlalchemy
+aiofiles
