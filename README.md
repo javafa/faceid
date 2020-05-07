@@ -25,8 +25,9 @@
    - CPU   
    `conda install pytorch torchvision cpuonly -c pytorch`
    
-6. (additional) for windows > before install requirements   
-   install Visual Studio C++ for bcolz package   
+6. (additional) for windows > before install requirements
+   install Microsoft Build Tools 2015 Update 3 for bcolz package   
+   (visualcppbuildtools_full.exe)   
 
 7. install requirement packages   
    `pip install -r requirements.txt`   
