@@ -3,8 +3,6 @@
 *.swo
 *.DS_Store
 
-!.requirements.txt
-
 *.jpg
 *.png
 *.txt

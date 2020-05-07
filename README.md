@@ -4,31 +4,31 @@
 
 ## Install   
 
-0. download and unzip or [git clone]   
+1. download and unzip or [git clone]   
    download this project and unzip   
    move the directory   
    `cd [project]`   
 
-1. install anaconda 3.x
+2. install anaconda 3.x
 
-2. create virtual environment and activate   
+3. create virtual environment and activate   
    `conda create -n [project name] python=3.7`   
    `conda activate [project name]`   
 
-3. (optional) download pre-trained   
+4. (optional) download pre-trained   
    download latest model_mobilefacenet.pth to the [project] directory
    
-4. install Pytorch and Cuda   
+5. install Pytorch and Cuda   
    - GPU (nvidia product only)   
    `conda install pytorch torchvision cudatoolkit=9.1 -c pytorch`   
    (need to check your cuda version)   
    - CPU   
    `conda install pytorch torchvision cpuonly -c pytorch`
    
-5. (additional) for windows > before install requirements   
+6. (additional) for windows > before install requirements   
    install Visual Studio C++ for bcolz package   
 
-6. install requirement packages   
+7. install requirement packages   
    `pip install -r requirements.txt`   
    (could not install some packages by conda install)   
 
