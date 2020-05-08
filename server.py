@@ -51,6 +51,11 @@ async def new_group(group: rest_models.Group, db: Session = Depends(get_db)) :
     # group_dir = face_controller.regist_group(group.group_id)
     return {"result":result}
 
+@app.get("/api/persons")
+def get_persons(db: Session = Depends(get_db)):
+    results = crud.get_persons(db)
+    return {"result":results}
+
 @app.get("/api/groups")
 def get_groups(db: Session = Depends(get_db)):
     results = crud.get_groups(db)

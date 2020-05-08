@@ -5,7 +5,7 @@ from . import db_models, rest_models
 def get_group(db: Session, group_id: str):
     return db.query(db_models.Group).filter(db_models.Group.group_id == group_id).first()
 
-def get_groups(db: Session, skip: int = 0, limit: int = 100):
+def get_groups(db: Session, skip: int = 0, limit: int = 1000):
     return db.query(db_models.Group).offset(skip).limit(limit).all()
 
 def create_group(db: Session, group: rest_models.Group):
@@ -17,6 +17,9 @@ def create_group(db: Session, group: rest_models.Group):
 
 def get_person(db: Session, person_id: str):
     return db.query(db_models.Person).filter(db_models.Person.person_id == person_id).first()
+
+def get_persons(db: Session, skip: int = 0, limit: int = 1000):
+    return db.query(db_models.Person).offset(skip).limit(limit).all()
 
 def create_person(db: Session, person: rest_models.RegistPerson):
     db_person = db_models.Person(person_id=person.person_id, person_name=person.person_name)

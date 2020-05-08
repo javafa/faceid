@@ -10,8 +10,8 @@
     <h3>Regist Role Group</h3>
     <form id="group">
         <label for="group_id">Roll Group ID:</label>
-        <input type="text" id="group_id" name="group_id"><br/>
-        <label for="group_name">Roll Group Name :</label>
+        <input type="text" id="group_id" name="group_id">
+        <label for="group_name">Name :</label>
         <input type="text" id="group_name" name="group_name"><br/>
         <input type="button" value="Submit" id="submit_group"/>
     </form>
@@ -19,8 +19,8 @@
     <h3>Regist Face</h3>
     <form id="face">
         <label for="person_id">Person ID :</label>
-        <input type="text" id="person_id" name="person_id"><br/>
-        <label for="person_name">Person Name :</label>
+        <input type="text" id="person_id" name="person_id">
+        <label for="person_name">Name :</label>
         <input type="text" id="person_name" name="person_name"><br/>
         <label for="img">Image File :</label>
         <input type="file" id="img" name="img" accept="image/*"><br/>
@@ -30,9 +30,11 @@
     <h3>Allow Role to Person</h3>
     <form id="allow">
         <label for="person_id">Person ID :</label>
-        <input type="text" id="person_id" name="person_id"><br/>
+        <select id="person_id" name="person_id"></select>
+        <input type="button" value="Load Persons" id="load_persons"/><br/>
         <label for="group_id">Roll Group :</label>
-        <input type="text" id="group_id" name="group_id"><br/>
+        <select id="group_id" name="group_id"></select>
+        <input type="button" value="Load Groups" id="load_groups"/><br/>
         <input type="button" value="Submit" id="submit_allow"/>
     </form>
 
@@ -41,8 +43,6 @@
         <label for="group_id">Roll Group:</label>
         <input type="text" id="group_id" name="group_id"><br/>
         <video id="video" name="video" width="640" height="480" autoplay></video><br/>
-        <!-- <canvas id="canvas" name="canvas" width="640" height="480"></canvas><br/>
-        <button id="snap">Take</button><br/> -->
         <input type="button" value="Submit" id="submit_identify"/>
     </form>
 </body>
@@ -59,6 +59,49 @@
             video.play();
         });
     }
+
+    $("#load_persons").click(function( event ) {
+        var url = "/api/persons";
+
+        $.ajax({
+            url: url,
+            type: "get",
+            accept: "application/json",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function(data) {
+                console.log('success--->', data);
+            },
+            error: function(jqXHR,textStatus,errorThrown) {
+                console.log('fail--->', textStatus);
+            }
+        });
+    });
+
+    $("#load_groups").click(function( event ) {
+        var url = "/api/groups";
+
+        $.ajax({
+            url: url,
+            type: "get",
+            accept: "application/json",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function(data) {
+                console.log('success--->', data);
+                $("#group_id").empty();
+                var result = JSON.stringify(["result"]);
+                console.log('result--->', result);
+                for(i in result){
+                    var option = $("<option value='"+result[i]['group_id']+"'>"+result[i]['group_name']+"</option>");
+                    $("#group_id").append(option);
+                }
+            },
+            error: function(jqXHR,textStatus,errorThrown) {
+                console.log('fail--->', textStatus);
+            }
+        });
+    });
 
     $("#submit_group").click(function( event ) {
         event.preventDefault();
