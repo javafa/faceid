@@ -29,7 +29,7 @@
 
     <h3>Allow Role to Person</h3>
     <form id="allow">
-        <label for="person_id">Person ID :</label>
+        <label for="person_id">Person :</label>
         <select id="person_id" name="person_id"></select>
         <input type="button" value="Load Persons" id="load_persons"/><br/>
         <label for="group_id">Roll Group :</label>
@@ -70,7 +70,15 @@
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             success: function(data) {
-                console.log('success--->', data);
+                $("#allow #person_id").empty();
+                var option = $("<option value=''>-choose person-</option>");
+                $("#allow #person_id").append(option);
+                result = data["result"];
+                for(i in result){
+                    item = result[i];
+                    var option = $("<option value='"+item['person_id']+"'>"+item['person_name']+"</option>");
+                    $("#allow #person_id").append(option);
+                }
             },
             error: function(jqXHR,textStatus,errorThrown) {
                 console.log('fail--->', textStatus);
@@ -80,7 +88,6 @@
 
     $("#load_groups").click(function( event ) {
         var url = "/api/groups";
-
         $.ajax({
             url: url,
             type: "get",
@@ -88,19 +95,55 @@
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             success: function(data) {
-                console.log('success--->', data);
-                $("#group_id").empty();
-                var result = JSON.stringify(["result"]);
-                console.log('result--->', result);
+                $("#allow #group_id").empty();
+                var option = $("<option value=''>-choose group-</option>");
+                $("#allow #group_id").append(option);
+                result = data["result"];
                 for(i in result){
-                    var option = $("<option value='"+result[i]['group_id']+"'>"+result[i]['group_name']+"</option>");
-                    $("#group_id").append(option);
+                    item = result[i];
+                    var option = $("<option value='"+item['group_id']+"'>"+item['group_name']+"</option>");
+                    $("#allow #group_id").append(option);
                 }
             },
             error: function(jqXHR,textStatus,errorThrown) {
                 console.log('fail--->', textStatus);
             }
         });
+    });
+
+    $("#submit_allow").click(function( event ) {
+        event.preventDefault();
+
+        if($("#allow #person_id").val() == ""){
+            alert('please choose a Person!');
+        }else if($("#allow #group_id").val() == ""){
+            alert('please choose a Role Group!');
+        } else {
+            var url = "/api/group";
+            var data = $("form#group").serializeArray();
+
+            var object = {};
+            for (var i = 0; i < data.length; i++){
+                object[data[i]['name']] = data[i]['value'];
+            }
+            
+            var json_str = JSON.stringify(object);
+
+            $.ajax({
+                url: url,
+                type: "post",
+                accept: "application/json",
+                contentType: "application/json; charset=utf-8",
+                data: json_str,
+                dataType: "json",
+                success: function(data) {
+                    console.log('success--->', data);
+                },
+                error: function(jqXHR,textStatus,errorThrown) {
+                    console.log('fail--->', textStatus);
+                }
+            });
+        }
     });
 
     $("#submit_group").click(function( event ) {
