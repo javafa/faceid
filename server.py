@@ -32,7 +32,7 @@ def get_db():
         db.close()
 
 # static resource
-app.mount("/resource", StaticFiles(directory="static"), name="resource")
+app.mount("/service", StaticFiles(directory="web"), name="service")
 
 validators = {"foo": "if you need define this"}
 
@@ -83,7 +83,7 @@ async def identify_person(person: rest_models.IdentifyPerson, db: Session = Depe
 
 @app.get("/test", status_code=307, response_class=Response)
 def api_test_in_browser():
-    return RedirectResponse('/resource/test_face_server.html')
+    return RedirectResponse('/service/test_face_server.html')
 
 if __name__ == '__main__' :
     uvicorn.run(app, host="0.0.0.0", port=8000)
