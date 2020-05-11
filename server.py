@@ -19,7 +19,7 @@ db_models.Base.metadata.create_all(bind=engine)
 # Title
 app = FastAPI(
     title="BeFace",
-    description="This is a lightweight face recognition project by bepluslab.",
+    description="This is a lightweight face recognition project by ooo.",
     version="0.1.0 Beta",
 )
 
