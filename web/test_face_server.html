@@ -1,320 +1,98 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-<title>Face Recognition Test</title>
-<script src="https://code.jquery.com/jquery-3.5.0.min.js"></script>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <title>Face Recognition Test</title>
 </head>
-<body>
+<body >
     <h1>Face Recognition Test</h1>
     
-    <h3>Regist Role Group</h3>
-    <form id="group">
-        <label for="group_id">Roll Group ID:</label>
-        <input type="text" id="group_id" name="group_id">
-        <label for="group_name">Name :</label>
-        <input type="text" id="group_name" name="group_name"><br/>
-        <input type="button" value="Submit" id="submit_group"/>
-    </form>
-
-    <h3>Regist Person</h3>
-    <form id="face">
-        <label for="person_id">Person ID :</label>
-        <input type="text" id="person_id" name="person_id">
-        <label for="person_name">Name :</label>
-        <input type="text" id="person_name" name="person_name"><br/>
-        <label for="img">Image File :</label>
-        <input type="file" id="img" name="img" accept="image/*"><br/>
-        <input type="button" value="Submit" id="submit_face"/>
-    </form>
-
-    <h3>Person List</h3>
-    <input type="button" value="Show Person List" id="submit_person_list"/><br/>
-
-    <h3>Allow Role to Person</h3>
-    <form id="allow">
-        <label for="person_id">Person :</label>
-        <select id="person_id" name="person_id"></select>
-        <input type="button" value="Load Persons" id="load_persons"/><br/>
-        <label for="group_id">Roll Group :</label>
-        <select id="group_id" name="group_id"></select>
-        <input type="button" value="Load Groups" id="load_groups"/><br/>
-        <input type="button" value="Submit" id="submit_allow"/>
-    </form>
-
-    <h3>Identify Face</h3>
-    <form id="identify">
-        <label for="group_id">Roll Group :</label>
-        <select id="group_id" name="group_id"></select>
-        <input type="button" value="Load Groups" id="load_identify_groups"/><br/>
-        <label>Result:</label>
-        <div id="result_face" name="result_face"></div><br/>
-        <input type="button" value="Submit" id="submit_identify"/><br/>
-        <video id="video" name="video" width="1280" height="900" autoplay></video>
-    </form>
+    <div class="card" style="width: 37rem;">
+        <div class="card-body">
+            <h5 class="card-title">Regist Role Group</h5>
+            <form id="group">
+                <label for="group_id">Roll Group ID:</label>
+                <input type="text" id="group_id" name="group_id">
+                <label for="group_name">Name :</label>
+                <input type="text" id="group_name" name="group_name"><br/>
+                <button type="button" class="btn btn-primary" id="submit_group">Add Role</button>
+            </form>
+        </div>
+    </div>
+</br>
+    <div class="card" style="width: 37rem;">
+        <div class="card-body">
+            <h5 class="card-title">Regist Person</h5>
+            <form id="face">
+                <label for="person_id">Person ID :</label>
+                <input type="text" id="person_id" name="person_id">
+                <label for="person_name">Name :</label>
+                <input type="text" id="person_name" name="person_name"><br/>
+                <label for="img">Image File :</label>
+                <input type="file" class="form-control-file" id="img" name="img" accept="image/*"><br/>
+                <button type="button" class="btn btn-primary" id="submit_face">Regist Person</button>
+            </form>
+        </div>
+    </div>
+</br>
+    <div class="card" style="width: 37rem;">
+        <div class="card-body">
+            <h5 class="card-title">Person List</h5>
+            <button type="button" class="btn btn-primary" id="submit_person_list">Show Person List</button><br/>
+        </div>
+    </div>
+</br>
+    <div class="card" style="width: 37rem;">
+        <div class="card-body">
+            <h5 class="card-title">Allow Role to Person</h5>
+            <form id="allow">
+                <label for="person_id">Person :</label>
+                <select id="person_id" name="person_id"></select>
+                <button type="button" class="btn btn-secondary btn-sm" id="load_persons">Load Persons</button><br/>
+                <label for="group_id">Roll Group :</label>
+                <select id="group_id" name="group_id"></select>
+                <button type="button" class="btn btn-secondary btn-sm" id="load_groups">Load Role Groups</button><br/>
+                <button type="button" class="btn btn-primary" id="submit_allow">Allow Role</button>
+            </form>
+        </div>
+    </div>
+</br>
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Identify Face</h5>
+            <form id="identify">
+                <label for="group_id">Roll Group :</label>
+                <select id="group_id" name="group_id"></select>
+                <button type="button" class="btn btn-secondary btn-sm" id="load_identify_groups">Load Role Groups</button><br/>
+                <label>Result:</label>
+                <div id="result_face" name="result_face"></div><br/>
+                <button type="button" class="btn btn-primary" id="submit_identify">Identify</button><br/>
+                <video id="video" name="video" width="1000" height="800" autoplay></video>
+            </form>
+        </div>
+    </div>
+    
 </body>
 </html>
 
 <script>
-    var video = document.getElementById('video');
-    // Get access to the camera!
-    if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        // Not adding `{ audio: true }` since we only want video now
-        navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
-            //video.src = window.URL.createObjectURL(stream);
-            video.srcObject = stream;
-            video.play();
-        });
-    }
-
-    $("#load_persons").click(function( event ) {
-        var url = "/api/persons";
-
-        $.ajax({
-            url: url,
-            type: "get",
-            accept: "application/json",
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function(data) {
-                $("#allow #person_id").empty();
-                var option = $("<option value=''>-choose person-</option>");
-                $("#allow #person_id").append(option);
-                result = data["result"];
-                for(i in result){
-                    item = result[i];
-                    var option = $("<option value='"+item['person_id']+"'>"+item['person_name']+"</option>");
-                    $("#allow #person_id").append(option);
-                }
-            },
-            error: function(jqXHR,textStatus,errorThrown) {
-                console.log('fail--->', textStatus);
-            }
-        });
+var video = document.getElementById('video');
+// Get access to the camera!
+if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+    // Not adding `{ audio: true }` since we only want video now
+    navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
+        //video.src = window.URL.createObjectURL(stream);
+        video.srcObject = stream;
+        video.play();
     });
-
-    $("#load_groups").click(function( event ) {
-        var url = "/api/groups";
-        $.ajax({
-            url: url,
-            type: "get",
-            accept: "application/json",
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function(data) {
-                $("#allow #group_id").empty();
-                var option = $("<option value=''>-choose group-</option>");
-                $("#allow #group_id").append(option);
-                result = data["result"];
-                for(i in result){
-                    item = result[i];
-                    var option = $("<option value='"+item['group_id']+"'>"+item['group_name']+"</option>");
-                    $("#allow #group_id").append(option);
-                }
-            },
-            error: function(jqXHR,textStatus,errorThrown) {
-                console.log('fail--->', textStatus);
-            }
-        });
-    });
-
-    $("#load_identify_groups").click(function( event ) {
-        var url = "/api/groups";
-        $.ajax({
-            url: url,
-            type: "get",
-            accept: "application/json",
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function(data) {
-                $("#identify #group_id").empty();
-                var option = $("<option value=''>-choose group-</option>");
-                $("#identify #group_id").append(option);
-                result = data["result"];
-                for(i in result){
-                    item = result[i];
-                    var option = $("<option value='"+item['group_id']+"'>"+item['group_name']+"</option>");
-                    $("#identify #group_id").append(option);
-                }
-            },
-            error: function(jqXHR,textStatus,errorThrown) {
-                console.log('fail--->', textStatus);
-            }
-        });
-    });
-
-    $("#submit_allow").click(function( event ) {
-        event.preventDefault();
-
-        if($("#allow #person_id").val() == ""){
-            alert('please choose a Person!');
-        }else if($("#allow #group_id").val() == ""){
-            alert('please choose a Role!');
-        } else {
-            var url = "/api/group";
-            var data = $("form#group").serializeArray();
-
-            var object = {};
-            for (var i = 0; i < data.length; i++){
-                object[data[i]['name']] = data[i]['value'];
-            }
-            
-            var json_str = JSON.stringify(object);
-
-            $.ajax({
-                url: url,
-                type: "post",
-                accept: "application/json",
-                contentType: "application/json; charset=utf-8",
-                data: json_str,
-                dataType: "json",
-                success: function(data) {
-                    console.log('success--->', data);
-                },
-                error: function(jqXHR,textStatus,errorThrown) {
-                    console.log('fail--->', textStatus);
-                }
-            });
-        }
-    });
-
-    $("#submit_group").click(function( event ) {
-        event.preventDefault();
-
-        if($("#group #group_id").val() == ""){
-            alert('please input Group ID!');
-        } else {
-            var url = "/api/group";
-            var data = $("form#group").serializeArray();
-
-            var object = {};
-            for (var i = 0; i < data.length; i++){
-                object[data[i]['name']] = data[i]['value'];
-            }
-            
-            var json_str = JSON.stringify(object);
-
-            $.ajax({
-                url: url,
-                type: "post",
-                accept: "application/json",
-                contentType: "application/json; charset=utf-8",
-                data: json_str,
-                dataType: "json",
-                success: function(data) {
-                    console.log('success--->', data);
-                },
-                error: function(jqXHR,textStatus,errorThrown) {
-                    console.log('fail--->', textStatus);
-                }
-            });
-        }
-    });
-
-    $("#submit_face").click(function( event ) {
-        event.preventDefault();
-        if($("#face #person_id").val() == ""){
-            alert('please input Person ID!');
-        } else if($("#face #img").val() == ""){
-            alert('please attach Image File!');
-        } else {
-            var url = "/api/person";
-            var data = $("form#face").serializeArray();
-
-            console.log("data", data);
-
-            var file = document.querySelector('#face #img');
-            var fileList = file.files ;
-            var reader = new FileReader();
-            reader.readAsDataURL(fileList[0]);
-            
-            reader.onload = function() {
-                var base64data = reader.result;
-                var img_result = base64data.split(',')[1]
-
-                // console.log("data", data);
-                data.push({"name":"img", "value":img_result});
-
-                // json object to json string
-                var object = {};
-                for (var i = 0; i < data.length; i++){
-                    object[data[i]['name']] = data[i]['value'];
-                }
-                
-                var json_str = JSON.stringify(object);
-
-                $.ajax({
-                    url: url,
-                    type: "post",
-                    accept: "application/json",
-                    contentType: "application/json; charset=utf-8",
-                    data: json_str,
-                    dataType: "json",
-                    success: function(data) {
-                        console.log('success--->', data);
-                    },
-                    error: function(jqXHR,textStatus,errorThrown) {
-                        console.log('fail--->', textStatus);
-                    }
-                });
-            }
-        }
-    });
-
-    $("#submit_identify").click(function( event ) {
-        event.preventDefault();
-        if($("#identify #group_id").has('option').length < 1){
-            alert('please load Roles!');
-        } else if($("#identify #group_id").val() == ""){
-            alert('please choose a Role!');
-        } else {
-
-            var canvas = document.createElement("canvas");
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            canvas.getContext('2d')
-                .drawImage(video, 0, 0, canvas.width, canvas.height);
-
-            var url = "/api/identify";
-
-            var object = {};
-            object["group_id"] = $("#identify #group_id").val()
-
-            object["img"] = canvas.toDataURL().split(',')[1];
-
-            var json_str = JSON.stringify(object);
-
-            // console.log('json_string', json_str)
-
-            $.ajax({
-                url: url,
-                type: "post",
-                accept: "application/json",
-                contentType: "application/json; charset=utf-8",
-                data: json_str,
-                dataType: "json",
-                success: function(data) {
-                    console.log('success--->', data);
-                    result = data["result"];
-                    if (result) {
-                        object_list = data["object_id_list"];
-                        result = "<ul>"
-                        for(i in object_list){
-                            object = object_list[i];
-                            var li = "<li>"+object['object_id']+" : "+object['distance']+"</li>";
-                            result += li;
-                        }
-                        result += "</ul>";
-                        $("#result_face").html(result);
-                    } else {
-                        $("#result_face").html(data["description"]);
-                    }
-                },
-                error: function(jqXHR,textStatus,errorThrown) {
-                    console.log('fail--->', textStatus);
-                }
-            });
-
-        }
-    });
-
+}
 </script>
+<script src="/service/js/controller.js"></script>
