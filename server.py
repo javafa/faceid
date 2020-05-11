@@ -14,6 +14,10 @@ import face_controller
 from sqlalchemy.orm import Session
 from sqlalchemy import exc
 
+from PIL import Image
+import base64
+import io
+
 db_models.Base.metadata.create_all(bind=engine)
 
 # Title
@@ -69,16 +73,29 @@ async def new_person(new_person: rest_models.RegistPerson, db: Session = Depends
         person = crud.create_person(db, new_person)
     else:
         max_img_id = crud.get_max_img_id(db, new_person.person_id)
- 
-    # db insert face image
-    db_img = crud.create_img(db, new_person.person_id, max_img_id)
-    result = face_controller.regist_with_align(new_person.img, new_person.person_id, str(max_img_id))
+
+    try: 
+        img = Image.open(io.BytesIO(base64.b64decode(new_person.img))).convert("RGB")
+    except:
+        return {"result":False, "detail":"base64 decoding error"}
+
+    result = face_controller.regist_with_align(img, new_person.person_id, str(max_img_id))
+
+    if result["result"] :
+        db_img = crud.create_img(db, new_person.person_id, max_img_id)
 
     return {"result":str(result["result"]), "detail":result["description"]}
 
 @app.post("/api/identify")
 async def identify_person(person: rest_models.IdentifyPerson, db: Session = Depends(get_db)) :
-    result = face_controller.identify_with_align(person.img, person.group_id)
+
+    try: 
+        img = Image.open(io.BytesIO(base64.b64decode(person.img))).convert("RGB")
+    except:
+        return {"result":False, "detail":"base64 decoding error"}
+
+    result = face_controller.identify_with_align(img, person.group_id)
+
     return result
 
 @app.get("/test", status_code=307, response_class=Response)

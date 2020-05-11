@@ -34,30 +34,32 @@ def align_face(img):
     bb, landmarks = detect_faces(img)
     
     num_faces = len(bb)
-    # assert num_faces < 2, "The number of people must be one"
     
-    face_point = bb[0]
-    landmark = landmarks[0]
+    if num_faces > 0 :
+        face_point = bb[0]
+        landmark = landmarks[0]
 
-    # get largest one
-    if num_faces > 1 :
-        for i in range(len(bb)) :
-            face_area = face_point[2] * face_point[3]
-            bb_area = bb[i][2] * bb[i][3]
-            if face_area < bb_area :
-                face_point = bb[i]
-                landmark = landmarks[i]
+        # get largest one
+        if num_faces > 1 :
+            for i in range(len(bb)) :
+                face_area = face_point[2] * face_point[3]
+                bb_area = bb[i][2] * bb[i][3]
+                if face_area < bb_area :
+                    face_point = bb[i]
+                    landmark = landmarks[i]
 
-    face_img = img.crop((face_point[0], face_point[1], face_point[2], face_point[3]))
-    cv_face_img = cv2.cvtColor(np.asarray(face_img), cv2.COLOR_RGB2BGR)
+        face_img = img.crop((face_point[0], face_point[1], face_point[2], face_point[3]))
+        cv_face_img = cv2.cvtColor(np.asarray(face_img), cv2.COLOR_RGB2BGR)
 
-    # align image
-    facial5points = [[landmark[j], landmark[j+5]] for j in range(5)]
-    warped_face = warp_and_crop_face(np.array(img), facial5points, face_ref_points) #, crop_size=(112,112))
+        # align image
+        facial5points = [[landmark[j], landmark[j+5]] for j in range(5)]
+        warped_face = warp_and_crop_face(np.array(img), facial5points, face_ref_points) #, crop_size=(112,112))
 
-    face_image = Image.fromarray(warped_face)
-    
-    return face_image
+        face_image = Image.fromarray(warped_face)
+        
+        return face_image
+    else :
+        return None
 
 
 def seperate_bn_paras(modules):

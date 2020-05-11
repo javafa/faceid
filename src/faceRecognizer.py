@@ -40,21 +40,17 @@ class faceRecognizer:
     def make_facebank(self):
         names = []
         root_path = Path(self.facebank_path)
-        print("facebank:",self.facebank_path)
         embeddings = []
 
         for obj in root_path.iterdir():
             if obj.is_file():
                 continue
             else:
-                print("obj:",obj)
                 embs = []
                 for file in obj.iterdir():
-                    print("file:",file)
                     if not file.is_file():
                         continue
                     else:
-                        print(obj, file)
                         emb = np.load(file)
                         emb = torch.from_numpy(emb).to(self.device)
 

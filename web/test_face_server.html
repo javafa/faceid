@@ -16,7 +16,7 @@
         <input type="button" value="Submit" id="submit_group"/>
     </form>
 
-    <h3>Regist Face</h3>
+    <h3>Regist Person</h3>
     <form id="face">
         <label for="person_id">Person ID :</label>
         <input type="text" id="person_id" name="person_id">
@@ -26,6 +26,9 @@
         <input type="file" id="img" name="img" accept="image/*"><br/>
         <input type="button" value="Submit" id="submit_face"/>
     </form>
+
+    <h3>Person List</h3>
+    <input type="button" value="Show Person List" id="submit_person_list"/><br/>
 
     <h3>Allow Role to Person</h3>
     <form id="allow">
@@ -40,10 +43,13 @@
 
     <h3>Identify Face</h3>
     <form id="identify">
-        <label for="group_id">Roll Group:</label>
-        <input type="text" id="group_id" name="group_id"><br/>
-        <video id="video" name="video" width="640" height="480" autoplay></video><br/>
-        <input type="button" value="Submit" id="submit_identify"/>
+        <label for="group_id">Roll Group :</label>
+        <select id="group_id" name="group_id"></select>
+        <input type="button" value="Load Groups" id="load_identify_groups"/><br/>
+        <label>Result:</label>
+        <div id="result_face" name="result_face"></div><br/>
+        <input type="button" value="Submit" id="submit_identify"/><br/>
+        <video id="video" name="video" width="1280" height="900" autoplay></video>
     </form>
 </body>
 </html>
@@ -111,13 +117,38 @@
         });
     });
 
+    $("#load_identify_groups").click(function( event ) {
+        var url = "/api/groups";
+        $.ajax({
+            url: url,
+            type: "get",
+            accept: "application/json",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function(data) {
+                $("#identify #group_id").empty();
+                var option = $("<option value=''>-choose group-</option>");
+                $("#identify #group_id").append(option);
+                result = data["result"];
+                for(i in result){
+                    item = result[i];
+                    var option = $("<option value='"+item['group_id']+"'>"+item['group_name']+"</option>");
+                    $("#identify #group_id").append(option);
+                }
+            },
+            error: function(jqXHR,textStatus,errorThrown) {
+                console.log('fail--->', textStatus);
+            }
+        });
+    });
+
     $("#submit_allow").click(function( event ) {
         event.preventDefault();
 
         if($("#allow #person_id").val() == ""){
             alert('please choose a Person!');
         }else if($("#allow #group_id").val() == ""){
-            alert('please choose a Role Group!');
+            alert('please choose a Role!');
         } else {
             var url = "/api/group";
             var data = $("form#group").serializeArray();
@@ -231,8 +262,10 @@
 
     $("#submit_identify").click(function( event ) {
         event.preventDefault();
-        if($("#identify #group_id").val() == ""){
-            alert('please input Group ID!');
+        if($("#identify #group_id").has('option').length < 1){
+            alert('please load Roles!');
+        } else if($("#identify #group_id").val() == ""){
+            alert('please choose a Role!');
         } else {
 
             var canvas = document.createElement("canvas");
@@ -261,9 +294,19 @@
                 dataType: "json",
                 success: function(data) {
                     console.log('success--->', data);
-                    for(i in data.objectID_list){
-                        console.log("id->",data.objectID_list[i].objectID);
-                        console.log("distance->",data.objectID_list[i].distance);
+                    result = data["result"];
+                    if (result) {
+                        object_list = data["object_id_list"];
+                        result = "<ul>"
+                        for(i in object_list){
+                            object = object_list[i];
+                            var li = "<li>"+object['object_id']+" : "+object['distance']+"</li>";
+                            result += li;
+                        }
+                        result += "</ul>";
+                        $("#result_face").html(result);
+                    } else {
+                        $("#result_face").html(data["description"]);
                     }
                 },
                 error: function(jqXHR,textStatus,errorThrown) {
