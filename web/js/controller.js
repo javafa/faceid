@@ -1,5 +1,5 @@
 
-$("#load_persons").click(function( event ) {
+function loadPersons ( selectObj ) {
     var url = "/api/persons";
 
     $.ajax({
@@ -9,23 +9,23 @@ $("#load_persons").click(function( event ) {
         contentType: "application/json; charset=utf-8",
         dataType: "json",
         success: function(data) {
-            $("#allow #person_id").empty();
+            selectObj.empty();
             var option = $("<option value=''>-choose person-</option>");
-            $("#allow #person_id").append(option);
+            selectObj.append(option);
             result = data["result"];
             for(i in result){
                 item = result[i];
                 var option = $("<option value='"+item['person_id']+"'>"+item['person_name']+"</option>");
-                $("#allow #person_id").append(option);
+                selectObj.append(option);
             }
         },
         error: function(jqXHR,textStatus,errorThrown) {
             console.log('fail--->', textStatus);
         }
     });
-});
+}
 
-$("#load_groups").click(function( event ) {
+function loadGroups( selectObj ) {
     var url = "/api/groups";
     $.ajax({
         url: url,
@@ -34,54 +34,32 @@ $("#load_groups").click(function( event ) {
         contentType: "application/json; charset=utf-8",
         dataType: "json",
         success: function(data) {
-            $("#allow #group_id").empty();
+            selectObj.empty();
             var option = $("<option value=''>-choose group-</option>");
-            $("#allow #group_id").append(option);
+            selectObj.append(option);
             result = data["result"];
             for(i in result){
                 item = result[i];
                 var option = $("<option value='"+item['group_id']+"'>"+item['group_name']+"</option>");
-                $("#allow #group_id").append(option);
+                selectObj.append(option);
             }
         },
         error: function(jqXHR,textStatus,errorThrown) {
             console.log('fail--->', textStatus);
         }
     });
-});
+}
 
-$("#load_identify_groups").click(function( event ) {
-    var url = "/api/groups";
-    $.ajax({
-        url: url,
-        type: "get",
-        accept: "application/json",
-        contentType: "application/json; charset=utf-8",
-        dataType: "json",
-        success: function(data) {
-            $("#identify #group_id").empty();
-            var option = $("<option value=''>-choose group-</option>");
-            $("#identify #group_id").append(option);
-            result = data["result"];
-            for(i in result){
-                item = result[i];
-                var option = $("<option value='"+item['group_id']+"'>"+item['group_name']+"</option>");
-                $("#identify #group_id").append(option);
-            }
-        },
-        error: function(jqXHR,textStatus,errorThrown) {
-            console.log('fail--->', textStatus);
-        }
-    });
-});
+function allowRoles() {
 
-$("#submit_allow").click(function( event ) {
-    event.preventDefault();
-
-    if($("#allow #person_id").val() == ""){
-        alert('please choose a Person!');
-    }else if($("#allow #group_id").val() == ""){
+    if($("#allow #group_id").has('option').length < 1){
+        alert('please load Roles!');
+    } else if($("#allow #person_id").has('option').length < 1){
+        alert('please load Persons!');
+    } else if($("#allow #group_id").val() == ""){
         alert('please choose a Role!');
+    } else if($("#allow #person_id").val() == ""){
+        alert('please choose a Person!');
     } else {
         var url = "/api/group";
         var data = $("form#group").serializeArray();
@@ -108,11 +86,9 @@ $("#submit_allow").click(function( event ) {
             }
         });
     }
-});
+}
 
-$("#submit_group").click(function( event ) {
-    event.preventDefault();
-
+function submitGroup(){
     if($("#group #group_id").val() == ""){
         alert('please input Group ID!');
     } else {
@@ -138,10 +114,9 @@ $("#submit_group").click(function( event ) {
             }
         });
     }
-});
+}
 
-$("#submit_face").click(function( event ) {
-    event.preventDefault();
+function submitPerson() {
     if($("#face #person_id").val() == ""){
         alert('please input Person ID!');
     } else if($("#face #img").val() == ""){
@@ -188,10 +163,9 @@ $("#submit_face").click(function( event ) {
             });
         }
     }
-});
+}
 
-$("#submit_identify").click(function( event ) {
-    event.preventDefault();
+function identify() {
     if($("#identify #group_id").has('option').length < 1){
         alert('please load Roles!');
     } else if($("#identify #group_id").val() == ""){
@@ -213,8 +187,6 @@ $("#submit_identify").click(function( event ) {
 
         var json_str = JSON.stringify(object);
 
-        // console.log('json_string', json_str)
-
         $.ajax({
             url: url,
             type: "post",
@@ -224,15 +196,23 @@ $("#submit_identify").click(function( event ) {
             dataType: "json",
             success: function(data) {
                 console.log('success--->', data);
-                result = data["result"];
-                if (result) {
+                if (data["result"]) {
                     object_list = data["object_id_list"];
                     result = "<ul>"
+
+                    nearest = 1;
                     for(i in object_list){
                         object = object_list[i];
-                        var li = "<li>"+object['object_id']+" : "+object['distance']+"</li>";
+                        oid = object['object_id'];
+                        distance = Number(object['distance']);
+                        var li = "<li>"+oid+" : "+distance+"</li>";
                         result += li;
+                        console.log('distance--->', distance);
+                        if(distance < nearest) {
+                            nearest = distance;
+                        }
                     }
+                    verifyAndOpen(nearest);
                     result += "</ul>";
                     $("#result_face").html(result);
                 } else {
@@ -245,4 +225,34 @@ $("#submit_identify").click(function( event ) {
         });
 
     }
-});
+}
+
+var deviceCallback = {"result":""};
+
+var deviceSocket = null;
+
+function setDeviceSocket(socketAddr){
+    deviceSocket = new WebSocket(socketAddr);
+    deviceSocket.onmessage  = function(message){
+        console.log("ws message--->",message.data);
+        if(message.data === "OK") {
+            openToast("The door is opened!");
+        }
+    };
+}
+
+function verifyAndOpen(distance) {
+    if(distance < 0.5){
+        openDevice();
+    }
+}
+
+function openDevice() {
+    deviceSocket.send("OPEN");
+}
+
+function openToast(msg) {
+    console.log("toast message--->",msg);
+    $("#toast-message").text(msg);
+    $("#main-toast").toast('show');
+}

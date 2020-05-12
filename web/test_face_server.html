@@ -1,85 +1,136 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-    <title>Face Recognition Test</title>
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+<!-- Bootstrap CSS -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.4.1.min.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+<style>
+    body {
+        padding: 20px;
+    }
+
+    .toast {
+        left: 50%;
+        top: 50%;
+        position: fixed;
+        /* transform: translate(-50%, 0px); */
+        z-index: 9999;
+    }
+</style>
+<title>Face Recognition Test</title>
+
 </head>
 <body >
-    <h1>Face Recognition Test</h1>
+
+<h1>Face Recognition Test</h1>
+
+<div class="card" style="width: 37rem;">
+    <div class="card-body">
+        <h5 class="card-title">Regist Role Group</h5>
+        <form id="group">
+            <label for="group_id">Roll Group ID:</label>
+            <input type="text" id="group_id" name="group_id">
+            <label for="group_name">Name :</label>
+            <input type="text" id="group_name" name="group_name"><br/>
+            <button type="button" class="btn btn-primary" id="submit_group">Add Role</button>
+        </form>
+    </div>
+</div>
+</br>
+<div class="card" style="width: 37rem;">
+    <div class="card-body">
+        <h5 class="card-title">Regist Person</h5>
+        <form id="face">
+            <label for="person_id">Person ID :</label>
+            <input type="text" id="person_id" name="person_id">
+            <label for="person_name">Name :</label>
+            <input type="text" id="person_name" name="person_name"><br/>
+            <label for="img">Image File :</label>
+            <input type="file" class="form-control-file" id="img" name="img" accept="image/*"><br/>
+            <button type="button" class="btn btn-primary" id="submit_face">Regist Person</button>
+        </form>
+    </div>
+</div>
+</br>
+<div class="card" style="width: 37rem;">
+    <div class="card-body">
+        <h5 class="card-title">Person List</h5>
+        <button type="button" class="btn btn-primary" id="submit_person_list">Show Person List</button><br/>
+    </div>
+</div>
+</br>
+<div class="card" style="width: 37rem;">
+    <div class="card-body">
+        <h5 class="card-title">Allow Role to Person</h5>
+        <form id="allow">
+            <label for="person_id">Person :</label>
+            <select id="person_id" name="person_id"></select>
+            <button type="button" class="btn btn-secondary btn-sm" id="load_persons">Load Persons</button><br/>
+            <label for="group_id">Roll Group :</label>
+            <select id="group_id" name="group_id"></select>
+            <button type="button" class="btn btn-secondary btn-sm" id="load_groups">Load Role Groups</button><br/>
+            <button type="button" class="btn btn-primary" id="submit_allow">Allow Role</button>
+        </form>
+    </div>
+</div>
+</br>
+<!-- Toast -->
+<div class="toast" id="main-toast" role="alert" aria-live="assertive" aria-atomic="true" data-delay="1000">
+    <div class="toast-header">
+        Notification
+    </div>
+    <div class="toast-body" id="toast-message">
+        Contents
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">Identify Face</h5>
+        <form id="identify">
+            <label for="group_id">Roll Group :</label>
+            <select id="group_id" name="group_id"></select>
+            <button type="button" class="btn btn-secondary btn-sm" id="load_identify_groups">Load Role Groups</button><br/>
+            <label>Result:</label>
+            <div id="result_face" name="result_face"></div><br/>
+            <button type="button" class="btn btn-primary" id="submit_identify">Identify</button><br/>
+            <video id="video" name="video" width="1000" height="800" autoplay></video>
+        </form>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal" id="personListModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
     
-    <div class="card" style="width: 37rem;">
-        <div class="card-body">
-            <h5 class="card-title">Regist Role Group</h5>
-            <form id="group">
-                <label for="group_id">Roll Group ID:</label>
-                <input type="text" id="group_id" name="group_id">
-                <label for="group_name">Name :</label>
-                <input type="text" id="group_name" name="group_name"><br/>
-                <button type="button" class="btn btn-primary" id="submit_group">Add Role</button>
-            </form>
+        <!-- Modal Header -->
+        <div class="modal-header">
+            <h4 class="modal-title">Person List</h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
         </div>
-    </div>
-</br>
-    <div class="card" style="width: 37rem;">
-        <div class="card-body">
-            <h5 class="card-title">Regist Person</h5>
-            <form id="face">
-                <label for="person_id">Person ID :</label>
-                <input type="text" id="person_id" name="person_id">
-                <label for="person_name">Name :</label>
-                <input type="text" id="person_name" name="person_name"><br/>
-                <label for="img">Image File :</label>
-                <input type="file" class="form-control-file" id="img" name="img" accept="image/*"><br/>
-                <button type="button" class="btn btn-primary" id="submit_face">Regist Person</button>
-            </form>
-        </div>
-    </div>
-</br>
-    <div class="card" style="width: 37rem;">
-        <div class="card-body">
-            <h5 class="card-title">Person List</h5>
-            <button type="button" class="btn btn-primary" id="submit_person_list">Show Person List</button><br/>
-        </div>
-    </div>
-</br>
-    <div class="card" style="width: 37rem;">
-        <div class="card-body">
-            <h5 class="card-title">Allow Role to Person</h5>
-            <form id="allow">
-                <label for="person_id">Person :</label>
-                <select id="person_id" name="person_id"></select>
-                <button type="button" class="btn btn-secondary btn-sm" id="load_persons">Load Persons</button><br/>
-                <label for="group_id">Roll Group :</label>
-                <select id="group_id" name="group_id"></select>
-                <button type="button" class="btn btn-secondary btn-sm" id="load_groups">Load Role Groups</button><br/>
-                <button type="button" class="btn btn-primary" id="submit_allow">Allow Role</button>
-            </form>
-        </div>
-    </div>
-</br>
-    <div class="card">
-        <div class="card-body">
-            <h5 class="card-title">Identify Face</h5>
-            <form id="identify">
-                <label for="group_id">Roll Group :</label>
-                <select id="group_id" name="group_id"></select>
-                <button type="button" class="btn btn-secondary btn-sm" id="load_identify_groups">Load Role Groups</button><br/>
-                <label>Result:</label>
-                <div id="result_face" name="result_face"></div><br/>
-                <button type="button" class="btn btn-primary" id="submit_identify">Identify</button><br/>
-                <video id="video" name="video" width="1000" height="800" autoplay></video>
-            </form>
-        </div>
-    </div>
     
+        <!-- Modal body -->
+        <div class="modal-body" id="personListBody">
+            Modal body..
+        </div>
+    
+        <!-- Modal footer -->
+        <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+        </div>
+    
+        </div>
+    </div>
+</div>
+
 </body>
 </html>
 
@@ -96,3 +147,49 @@ if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
 }
 </script>
 <script src="/service/js/controller.js"></script>
+
+<script>
+    var deviceUrl = "ws://192.10.207.53:80";
+    setDeviceSocket(deviceUrl);
+</script>
+
+<!-- button control -->
+<script>
+    // click button
+    $("#submit_group").click(function( event ) {
+        event.preventDefault();
+        submitGroup();
+    });
+
+    $("#submit_face").click(function( event ) {
+        event.preventDefault();
+        submitPerson();
+    });
+
+    $("#submit_person_list").click(function( event ) {
+        $("#personListModal").modal();
+    });
+
+    $("#submit_identify").click(function( event ) {
+        event.preventDefault();
+        identify();
+    });
+
+    $("#submit_allow").click(function( event ) {
+        event.preventDefault();
+        allowRoles();
+    });
+
+    // load data
+    $("#load_persons").click(function( event ) {
+        loadPersons($("#allow #person_id"));
+    });
+
+    $("#load_groups").click(function( event ) {
+        loadGroups($("#allow #group_id"));
+    });
+
+    $("#load_identify_groups").click(function( event ) {
+        loadGroups($("#identify #group_id"));
+    });
+</script>

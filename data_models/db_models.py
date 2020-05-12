@@ -15,13 +15,13 @@ class Person(Base):
 
 class PersonInGroup(Base):
     __tablename__ = "person_in_group"
-    no = Column(Integer, primary_key=True)
-    group_id = Column(String, ForeignKey("group.group_id"))
+    no = Column(Integer, primary_key=True, autoincrement=True)
     person_id = Column(String, ForeignKey("person.person_id"))
+    group_id = Column(String, ForeignKey("group.group_id"))
 
 class Img(Base):
     __tablename__ = "img"
-    no = Column(Integer, primary_key=True)
+    no = Column(Integer, primary_key=True, autoincrement=True)
     person_id = Column(String, ForeignKey("person.person_id"))
     img_id = Column(Integer)
     data_dir = Column(String)
