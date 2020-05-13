@@ -42,7 +42,7 @@ def create_img(db: Session, person_id: str, max_img_id:int):
     db.refresh(db_img)
     return db_img
 
-def get_persons_by_group_id(db: Session, group_id=str):
-    return db.query(db_models.Person).filter(db_models.Person.group_id == group_id).all()
+def get_roles_by_person_id(db: Session, person_id=str):
+    return db.query(db_models.RolesToPerson).filter(db_models.RolesToPerson.person_id == person_id).all()
 
 

@@ -11,6 +11,11 @@ class Person(BaseModel):
     person_id: str
     person_name: str = None
 
+# allow role to person
+class AllowRole(BaseModel):
+    person_id: str
+    group_id: str
+
 # regist person with face image
 class RegistPerson(BaseModel):
     person_id : str

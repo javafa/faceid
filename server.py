@@ -22,7 +22,7 @@ db_models.Base.metadata.create_all(bind=engine)
 
 # Title
 app = FastAPI(
-    title="BeFace",
+    title="FaceID",
     description="This is a lightweight face recognition project by ooo.",
     version="0.1.0 Beta",
 )
@@ -88,15 +88,17 @@ async def new_person(new_person: rest_models.RegistPerson, db: Session = Depends
 
 @app.post("/api/identify")
 async def identify_person(person: rest_models.IdentifyPerson, db: Session = Depends(get_db)) :
-
     try: 
         img = Image.open(io.BytesIO(base64.b64decode(person.img))).convert("RGB")
     except:
         return {"result":False, "detail":"base64 decoding error"}
-
     result = face_controller.identify_with_align(img, person.group_id)
-
     return result
+
+@app.post("/api/allow_role")
+async def allow_roles(allow_role: rest_models.AllowRole, db: Session = Depends(get_db)) :
+    results = crud.get_persons(db)
+    return {"result":results}
 
 @app.get("/test", status_code=307, response_class=Response)
 def api_test_in_browser():
