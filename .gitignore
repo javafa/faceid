@@ -12,4 +12,5 @@
 
 face_database/
 face_temp/
+web/
 *.db
