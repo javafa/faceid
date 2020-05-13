@@ -45,7 +45,7 @@
 
 ## Test in the web browser   
    - open chrome   
-   http://127.0.0.1:8000/test   
+   http://127.0.0.1:8000/docs   
    
 ## copyright &copy; 2020 flow9.net   
    
