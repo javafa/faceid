@@ -61,8 +61,6 @@ def regist_with_align(img:Image, object_id:str, img_id:str):
     activate = True
     return result_dict
 
-
-
 ## 3. identify face
 def identify_with_align(img:Image, group_id:str, limit=10):
     global activate

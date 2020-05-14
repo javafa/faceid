@@ -94,11 +94,24 @@ async def identify_person(person: rest_models.IdentifyPerson, db: Session = Depe
     except:
         return {"result":False, "detail":"base64 decoding error"}
     result = face_controller.identify_with_align(img, person.role_id)
+
     return result
 
 @app.post("/api/allow_role")
 async def allow_roles(allow_role: rest_models.AllowRole, db: Session = Depends(get_db)) :
-    results = crud.get_roles(db)
+    # exist user
+    if crud.get_person(db, allow_role.person_id) is None :
+        return {"result":False, "detail": "person not exist!"}
+    # exist role
+    if crud.get_role(db, allow_role.role_id) is None :
+        return {"result":False, "detail": "role not exist!"}
+    # already allowed
+    roles = crud.get_roles_by_person_id(db, allow_role.person_id)
+    for role in roles :
+        if role.role_id == allow_role.role_id :
+            return {"result":False, "detail": "already have the same role!"}
+
+    results = crud.allow_role_to_person(db, allow_role)
     return {"result":True, "detail": results}
 
 @app.get("/test", status_code=307, response_class=Response)
