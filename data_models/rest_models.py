@@ -2,9 +2,9 @@ from pydantic import BaseModel
 from typing import List
 
 # regist person group
-class Group(BaseModel):
-    group_id: str
-    group_name: str = None
+class Role(BaseModel):
+    role_id: str
+    role_name: str = None
 
 # person
 class Person(BaseModel):
@@ -14,7 +14,7 @@ class Person(BaseModel):
 # allow role to person
 class AllowRole(BaseModel):
     person_id: str
-    group_id: str
+    role_id: str
 
 # regist person with face image
 class RegistPerson(BaseModel):
@@ -24,7 +24,7 @@ class RegistPerson(BaseModel):
 
 # identify face in a group
 class IdentifyPerson(BaseModel):
-    group_id: str
+    role_id: str
     img : str # base64 bytes string
 
 # item in results

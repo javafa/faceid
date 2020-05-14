@@ -44,26 +44,27 @@ validators = {"foo": "if you need define this"}
 def check_status():
     return {"status":"running"}
 
-@app.post("/api/group")
-async def new_group(group: rest_models.Group, db: Session = Depends(get_db)) :
+@app.post("/api/role")
+async def new_role(role: rest_models.Role, db: Session = Depends(get_db)) :
     try :
-        result = crud.create_group(db, group)
+        print("new_role", role)
+        result = crud.create_role(db, role)
     except exc.IntegrityError as error:
-        return {"result":"group_id is duplicated"}
+        return {"result":False, "detail":"role_id is duplicated"}
 
-    # check group_id directory existence
-    # group_dir = face_controller.regist_group(group.group_id)
-    return {"result":result}
+    return {"result":True, "detail": result}
 
 @app.get("/api/persons")
 def get_persons(db: Session = Depends(get_db)):
     results = crud.get_persons(db)
-    return {"result":results}
+    print("persons=",results)
+    return {"result":True, "detail": results}
 
-@app.get("/api/groups")
-def get_groups(db: Session = Depends(get_db)):
-    results = crud.get_groups(db)
-    return {"result":results}
+@app.get("/api/roles")
+def get_roles(db: Session = Depends(get_db)):
+    results = crud.get_roles(db)
+    print("roles=",results)
+    return {"result":True, "detail": results}
 
 @app.post("/api/person")
 async def new_person(new_person: rest_models.RegistPerson, db: Session = Depends(get_db)) :
@@ -84,7 +85,7 @@ async def new_person(new_person: rest_models.RegistPerson, db: Session = Depends
     if result["result"] :
         db_img = crud.create_img(db, new_person.person_id, max_img_id)
 
-    return {"result":str(result["result"]), "detail":result["description"]}
+    return {"result":result["result"], "detail":result["description"]}
 
 @app.post("/api/identify")
 async def identify_person(person: rest_models.IdentifyPerson, db: Session = Depends(get_db)) :
@@ -92,13 +93,13 @@ async def identify_person(person: rest_models.IdentifyPerson, db: Session = Depe
         img = Image.open(io.BytesIO(base64.b64decode(person.img))).convert("RGB")
     except:
         return {"result":False, "detail":"base64 decoding error"}
-    result = face_controller.identify_with_align(img, person.group_id)
+    result = face_controller.identify_with_align(img, person.role_id)
     return result
 
 @app.post("/api/allow_role")
 async def allow_roles(allow_role: rest_models.AllowRole, db: Session = Depends(get_db)) :
-    results = crud.get_persons(db)
-    return {"result":results}
+    results = crud.get_roles(db)
+    return {"result":True, "detail": results}
 
 @app.get("/test", status_code=307, response_class=Response)
 def api_test_in_browser():
