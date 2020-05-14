@@ -2,6 +2,21 @@
 
 * Framework : Python 3.7 + , Pytorch 1.4.0, FastAPI 0.1.0   
 
+## MobileFaceNet   
+
+The implementation of popular face recognition algorithms in pytorch framework, including arcface.    
+In this repository, we use a pre-trained MobliefaceNet model.    
+
+## References   
+[wujiyang/Face_Pytorch](https://github.com/wujiyang/Face_Pytorch)   
+[MuggleWang/CosFace_pytorch](https://github.com/MuggleWang/CosFace_pytorch)   
+[foamliu/MobileFaceNet-PyTorch](https://github.com/foamliu/MobileFaceNet-PyTorch)   
+[Xiaoccer/MobileFaceNet_Pytorch](https://github.com/Xiaoccer/MobileFaceNet_Pytorch)   
+[TreB1eN/InsightFace_Pytorch](https://github.com/TreB1eN/InsightFace_Pytorch)   
+[deepinsight/insightface](https://github.com/deepinsight/insightface)   
+[KaiyangZhou/pytorch-center-loss](https://github.com/KaiyangZhou/pytorch-center-loss)   
+[tengshaofeng/ResidualAttentionNetwork-pytorch](https://github.com/tengshaofeng/ResidualAttentionNetwork-pytorch) 
+   
 ## Install   
 
 1. download and unzip or [git clone]   
