@@ -67,4 +67,4 @@ In this repository, we use a pre-trained MobliefaceNet model.
 
 
 ## copyright &copy; 2020 kdh   
-   
+   Readme를 되도록 한글로 작성하려 하였으나. 의미 없을것 같다는 생각이. 허허허.   
