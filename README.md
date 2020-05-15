@@ -30,14 +30,14 @@ In this repository, we use a pre-trained MobliefaceNet model.
    `conda create -n [project name] python=3.7`   
    `conda activate [project name]`   
 
-4. (optional) download pre-trained   
+4. download pre-trained model   
    download latest model_mobilefacenet.pth to the [project] directory
 
 5. (additional) for GPU version   
    install CUDA Toolkit   
    install cuDNN   
    
-6. install Pytorch and Cuda   
+6. install Pytorch and Cuda toolkit   
    - GPU (nvidia product only)   
    `conda install pytorch torchvision cudatoolkit=10.1 -c pytorch`   
    (need to check your cuda version)   
@@ -45,7 +45,7 @@ In this repository, we use a pre-trained MobliefaceNet model.
    `conda install pytorch torchvision cpuonly -c pytorch`
    
 7. (additional) for windows > before install requirements
-   install Microsoft Build Tools 2015 Update 3 for bcolz package   
+   install "Microsoft Build Tools 2015 Update 3" for bcolz package   
    (visualcppbuildtools_full.exe)   
 
 8. install requirement packages   
@@ -58,9 +58,13 @@ In this repository, we use a pre-trained MobliefaceNet model.
    python server.py
    ```
 
-## Test in the web browser   
+## Test in web browser   
    - open chrome   
    http://127.0.0.1:8000/docs   
    
-## copyright &copy; 2020 flow9.net   
+   
+
+
+
+## copyright &copy; 2020 kdh   
    
