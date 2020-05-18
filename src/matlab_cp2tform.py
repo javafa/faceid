@@ -71,19 +71,14 @@ def findNonreflectiveSimilarity(uv, xy, options=None):
     M = xy.shape[0]
     x = xy[:, 0].reshape((-1, 1))  # use reshape to keep a column vector
     y = xy[:, 1].reshape((-1, 1))  # use reshape to keep a column vector
-    # print('--->x, y:\n', x, y
 
     tmp1 = np.hstack((x, y, np.ones((M, 1)), np.zeros((M, 1))))
     tmp2 = np.hstack((y, -x, np.zeros((M, 1)), np.ones((M, 1))))
     X = np.vstack((tmp1, tmp2))
-    # print('--->X.shape: ', X.shape
-    # print('X:\n', X
 
     u = uv[:, 0].reshape((-1, 1))  # use reshape to keep a column vector
     v = uv[:, 1].reshape((-1, 1))  # use reshape to keep a column vector
     U = np.vstack((u, v))
-    # print('--->U.shape: ', U.shape
-    # print('U:\n', U
 
     # We know that X * r = U
     if rank(X) >= 2 * K:
@@ -91,8 +86,6 @@ def findNonreflectiveSimilarity(uv, xy, options=None):
         r = np.squeeze(r)
     else:
         raise Exception('cp2tform:twoUniquePointsReq')
-
-    # print('--->r:\n', r
 
     sc = r[0]
     ss = r[1]
@@ -105,10 +98,7 @@ def findNonreflectiveSimilarity(uv, xy, options=None):
         [tx,  ty, 1]
     ])
 
-    # print('--->Tinv:\n', Tinv
-
     T = inv(Tinv)
-    # print('--->T:\n', T
 
     T[:, 2] = np.array([0, 0, 1])
 
@@ -119,14 +109,10 @@ def findSimilarity(uv, xy, options=None):
 
     options = {'K': 2}
 
-#    uv = np.array(uv)
-#    xy = np.array(xy)
-
     # Solve for trans1
     trans1, trans1_inv = findNonreflectiveSimilarity(uv, xy, options)
 
     # Solve for trans2
-
     # manually reflect the xy data across the Y-axis
     xyR = xy
     xyR[:, 0] = -1 * xyR[:, 0]
@@ -308,43 +294,17 @@ if __name__ == '__main__':
     uv = np.array((u, v)).T
     xy = np.array((x, y)).T
 
-    print('\n--->uv:')
-    print(uv)
-    print('\n--->xy:')
-    print(xy)
-
     trans, trans_inv = get_similarity_transform(uv, xy)
 
-    print('\n--->trans matrix:')
-    print(trans)
-
-    print('\n--->trans_inv matrix:')
-    print(trans_inv)
-
-    print('\n---> apply transform to uv')
-    print('\nxy_m = uv_augmented * trans')
     uv_aug = np.hstack((
         uv, np.ones((uv.shape[0], 1))
     ))
     xy_m = np.dot(uv_aug, trans)
-    print(xy_m)
-
-    print('\nxy_m = tformfwd(trans, uv)')
     xy_m = tformfwd(trans, uv)
-    print(xy_m)
-
-    print('\n---> apply inverse transform to xy')
-    print('\nuv_m = xy_augmented * trans_inv')
     xy_aug = np.hstack((
         xy, np.ones((xy.shape[0], 1))
     ))
     uv_m = np.dot(xy_aug, trans_inv)
-    print(uv_m)
-
-    print('\nuv_m = tformfwd(trans_inv, xy)')
     uv_m = tformfwd(trans_inv, xy)
-    print(uv_m)
-
     uv_m = tforminv(trans, xy)
-    print('\nuv_m = tforminv(trans, xy)')
-    print(uv_m)
+
