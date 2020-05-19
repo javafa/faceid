@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from rest_src import rest_models
 from rest_src import auth, person
 
-from util import stringutil
+from utils import stringutils
 
 # user
 def get_user_by_user_id(user_id: str, db: Session):
@@ -13,7 +13,7 @@ def get_user_by_user_id(user_id: str, db: Session):
     return db.query(table).filter(table.user_id == user_id).first()
 
 def create_user(user: auth.SignUp, db: Session):
-    hashed_user_id = stringutil.generateHashCode(user.user_id + user.user_name + user.passwd)
+    hashed_user_id = stringutils.generateHashCode(user.user_id + user.user_name + user.passwd)
     new_user = db_models.User(user_id=user.user_id, user_name=user.user_name, passwd=user.passwd, user_hash=hashed_user_id)
     db.add(new_user)
     return new_user

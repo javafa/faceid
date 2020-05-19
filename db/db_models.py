@@ -21,9 +21,9 @@ class Group(Base):
     __tablename__ = "group"
     no            = Column(Integer, primary_key=True, autoincrement=True)
     group_id      = Column(String(64), index=True, nullable=False) # auto creation hash string(user_id + group_name + timestamp)
-    group_name    = Column(String(50), index=True)
+    group_name    = Column(String(50), index=True, nullable=False, default="Default Group")
     created       = Column(DateTime, default=datetime.datetime.utcnow)
-    owner_hash    = Column(String(50), ForeignKey("user.user_hash"), nullable=False, index=True)
+    owner_hash    = Column(String(64), ForeignKey("user.user_hash"), nullable=False, index=True)
 
 # Group that I'm in
 class GroupOfUser(Base):
