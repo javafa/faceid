@@ -1,6 +1,25 @@
 from sqlalchemy.orm import Session
 
-from . import db_models, rest_models
+from . import db_models
+from rest_src import rest_models
+
+# user
+def not_exist_user_id(db: Session, user_id: str):
+    table = db_models.User
+    if db.query(table).filter(table.user_id == user_id) is None:
+        return True
+    return False
+
+def create_user(db: Session, user: rest_models.SignUp):
+    new_user = db_models.User(user_id=user.user_id, user_name=user.user_name, passwd=user.passwd)
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+    return new_user
+
+def get_user(db: Session, user: rest_models.SignIn):
+    table = db_models.User
+    return db.query(table).filter(table.user_id == user.user_id, table.passwd == user.passwd).first()
 
 # role group
 def get_role(db: Session, role_id: str):

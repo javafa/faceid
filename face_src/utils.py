@@ -1,7 +1,5 @@
 from datetime import datetime
 from PIL import Image
-from src.align_trans import get_reference_facial_points, warp_and_crop_face
-from thirdParty.mtcnn import detect_faces
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -14,6 +12,9 @@ import cv2
 import argparse
 import os
 import shutil
+
+from face_src.align_trans import get_reference_facial_points, warp_and_crop_face
+from thirdParty.mtcnn import detect_faces
 
 facebank_transform = transforms.Compose([
     transforms.Resize([112,112]),

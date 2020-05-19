@@ -1,7 +1,7 @@
 from datetime import datetime
 from PIL import Image
-from src.faceRecognizer import faceRecognizer
-from src.utils import *
+from face_src.faceRecognizer import faceRecognizer
+from face_src.utils import *
 
 import base64
 import cv2

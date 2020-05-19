@@ -7,8 +7,9 @@ from fastapi.responses import RedirectResponse, Response
 # fastapi has pydantic 
 from pydantic import BaseModel 
 
-from data_models import crud, rest_models, db_models
-from data_models.database import SessionLocal, engine
+from db import crud, db_models
+from db.database import SessionLocal, engine
+from rest_src import rest_models
 import face_controller
 
 from sqlalchemy.orm import Session
@@ -19,14 +20,12 @@ import base64
 import io
 
 db_models.Base.metadata.create_all(bind=engine)
-
 # Title
 app = FastAPI(
     title="FaceID",
     description="This is a lightweight face recognition project by ooo.",
     version="0.1.0 Beta",
 )
-
 # Dependency
 def get_db():
     try:
@@ -34,15 +33,38 @@ def get_db():
         yield db
     finally:
         db.close()
-
 # static resource
 app.mount("/service", StaticFiles(directory="web"), name="service")
-
 validators = {"foo": "if you need define this"}
 
 @app.get("/api/status")
-def check_status():
+async def check_status():
     return {"status":"running"}
+
+@app.get("/api/enable_user_id/{user_id}")
+async def exist_user_id(user_id, db: Session = Depends(get_db)):
+    result = crud.not_exist_user_id(db, user_id)
+    return {"result":result}
+
+@app.post("/api/signup")
+async def sign_up(signup: rest_models.SignUp, db: Session = Depends(get_db)) :
+    try :
+        print("signup", signup)
+        result = crud.create_user(db, signup)
+    except exc.IntegrityError as error:
+        return {"result":False, "detail":"could not sign-up!"}
+    return {"result":True, "detail": result}
+
+@app.post("/api/signin")
+async def sign_in(user: rest_models.SignIn, db: Session = Depends(get_db)) :
+    try :
+        print("signin", user)
+        result = crud.get_user(db, user)
+    except exc.IntegrityError as error:
+        return {"result":False, "detail":"could not sign-in!"}
+    return {"result":True, "detail": result}
+
+
 
 @app.post("/api/role")
 async def new_role(role: rest_models.Role, db: Session = Depends(get_db)) :

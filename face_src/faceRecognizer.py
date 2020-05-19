@@ -3,10 +3,11 @@ from PIL import Image
 import argparse
 from pathlib import Path
 import torch
-from src.model import MobileFaceNet
 from torchvision import transforms
 import numpy as np
 import os
+
+from face_src.model import MobileFaceNet
 
 class faceRecognizer:
     def __init__(self, threshold, model_path, facebank_path, embedding_size, device):
