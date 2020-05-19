@@ -26,12 +26,14 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 faceRecog = faceRecognizer(threshold=2.0, model_path=mobilefacenet_path, 
                                 facebank_path=face_database, embedding_size=512, device=device)
 
-## 1. regist group
-## input : groupID
-# def regist_group(group_id:str):
+## 1. controll group directory
+def create_group(group_id:str):
+    print("create group", group_id)
+
+def remove_group(group_id:str):
+    print("remove group", group_id)
 
 ## 2. regist face
-## output : result, imgID, description
 def regist_with_align(img:Image, object_id:str, img_id:str):
     result_dict = {}
     global activate

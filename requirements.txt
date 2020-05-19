@@ -12,8 +12,10 @@ tqdm
 
 fastapi
 uvicorn
-sqlalchemy
 aiofiles
+sqlalchemy
+mysql-connector-python
 
 pyjwt
 passlib[bcrypt]
+python-multipart

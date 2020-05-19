@@ -1,16 +1,6 @@
 from pydantic import BaseModel
 from typing import List
 
-# User info.
-class SignUp(BaseModel):
-    user_id: str # email
-    user_name: str
-    passwd: str # hashed
-    
-class SignIn(BaseModel):
-    user_id: str # email
-    passwd: str # hashed
-
 # Person Group
 class PersonGroup(BaseModel): # auto create default group after user's email confirmed
     person_group_id: str # hash(user_id + timestamp)
@@ -42,13 +32,6 @@ class AllowRole(BaseModel):
     person_id: str
     role_type: str # role or group
     role_or_group_id: str
-
-# regist person with face image
-class RegistPerson(BaseModel):
-    group_id : str
-    person_id : str
-    person_name : str
-    img : str # base64 bytes string
 
 # identify face in a group
 class IdentifyPerson(BaseModel):
