@@ -11,7 +11,7 @@ from sqlalchemy import exc
 
 from db import crud, db_models
 
-from util import stringutil
+from utils import stringutils
 
 from db.database import SessionLocal
 from contextlib import contextmanager
