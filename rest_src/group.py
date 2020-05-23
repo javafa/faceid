@@ -69,7 +69,7 @@ def delete_group(group_id:str, owner_hash:str):
                 if not deleted is None :
                     return {"result": True, "detail": "ok"}
             else:
-                return {"result": False, "detail": "persons exist in this group."}
+                return {"result": False, "detail": "persons exist in this group. can not delete."}
     except exc.SQLAlchemyError as error:
         print("group creation error", error)
     return {"result": False, "detail": "could not delete this group"}
