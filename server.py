@@ -34,16 +34,6 @@ app = FastAPI(
     version="0.1.0 Beta",
 )
 
-# origins = ['localhost', 'localhost:8000', 'HTTP://127.0.0.1:8000']
-# allow_methods=["DELETE", "GET", "POST", "PUT"]
-
-# app.add_middleware(
-#     CORSMiddleware,
-#     allow_origins=origins,
-#     allow_credentials=True,
-#     allow_methods=allow_methods,
-#     allow_headers=["*"])
-
 # static resource
 app.mount("/service", StaticFiles(directory="web"), name="service")
 # validators = {"foo": "if you need define this"}
