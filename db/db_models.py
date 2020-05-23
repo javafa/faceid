@@ -37,7 +37,7 @@ class GroupOfUser(Base):
 class Person(Base):
     __tablename__ = "person"
     no            = Column(Integer, primary_key=True, autoincrement=True)
-    person_hash   = Column(String(64), unique=True, index=True) #hash(group_id + person_id + person_name + timestamp)
+    person_hash   = Column(String(64), unique=True, index=True, nullable=False) #hash(group_id + person_id + person_name + timestamp)
     group_id      = Column(String(64), ForeignKey("group.group_id"), index=True, nullable=False)
     person_id     = Column(String(64), index=True, nullable=False) # usually email
     person_name   = Column(String(50), index=True)

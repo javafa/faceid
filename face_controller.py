@@ -35,12 +35,12 @@ def remove_group(group_hash:str):
     print("remove group", group_hash)
 
 ## 2. regist face
-def regist_with_align(img:Image, object_id:str, img_id:str):
+def regist_with_align(img:Image, group_id:str, object_id:str, img_id:str):
     result_dict = {}
     global activate
     activate = False
 
-    data_dir = face_database + object_id + '/'
+    data_dir = face_database + group_id + '/' + object_id + '/'
     make_dir(data_dir)
 
     # TODO:agmentation image
@@ -50,7 +50,7 @@ def regist_with_align(img:Image, object_id:str, img_id:str):
         result_dict['description'] = "face not found"
         return result_dict
 
-    temp_dir = face_temp + object_id + '/'
+    temp_dir = face_temp + group_id + '/' + object_id + '/'
     make_dir(temp_dir)
     img.save(temp_dir+img_id+".jpg")
 
@@ -80,7 +80,7 @@ def identify_with_align(img:Image, group_id:str, limit=10):
     img.save(face_database + temp_img_name)
 
     result_dict['result'] = True
-    result_dict['object_id_list'] = faceRecog.check_registration(img)["object_id_list"]
+    result_dict['object_id_list'] = faceRecog.check_registration(img, group_id)["object_id_list"]
     
     while limit < len(result_dict['object_id_list']):
         del(result_dict['object_id_list'][-1])

@@ -11,6 +11,10 @@ def generate_group_hash(user_id:str, group_name:str) :
     word = user_id + group_name + str(timeutils.get_microtime())
     return "g"+generate_hash(word)
 
+def generate_person_hash(group_id:str, person_id:str, person_name:str) :
+    word = group_id + person_id + person_name
+    return "p"+generate_hash(word)
+
 def generate_hash(word:str) :
     sha = hashlib.new('md5')
     encoded = word.encode('utf-8')

@@ -38,9 +38,9 @@ class faceRecognizer:
         emb = self.model(self.transform(img).to(self.device).unsqueeze(0))
         return emb
     
-    def make_facebank(self):
+    def make_facebank(self, group_id):
         names = []
-        root_path = Path(self.facebank_path)
+        root_path = Path(self.facebank_path + group_id)
         embeddings = []
 
         for obj in root_path.iterdir():
@@ -71,7 +71,7 @@ class faceRecognizer:
         return embeddings, names
 
 
-    def check_registration(self, face):
+    def check_registration(self, face, group_id):
         
         result_dict = {}
         result_dict['object_id_list'] = []
@@ -83,8 +83,10 @@ class faceRecognizer:
         
         print('threshold: ', self.threshold)
 
-        if len(os.listdir(self.facebank_path)) > 0:
-            facebank_embeddings, facebank_names = self.make_facebank() 
+        group_path = self.facebank_path + group_id
+
+        if len(os.listdir(self.group_path)) > 0:
+            facebank_embeddings, facebank_names = self.make_facebank(group_id) 
 
             diff = emb.unsqueeze(-1) - facebank_embeddings.transpose(1,0).unsqueeze(0)
             

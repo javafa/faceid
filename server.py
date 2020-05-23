@@ -179,8 +179,9 @@ def get_persons(auth: str = Depends(check_token)):
     return {"result":True, "detail": results}
 
 @app.post("/api/person")
-async def new_person(person: person.RegistPerson) :
-    return person.new_person(person)
+async def create_person(new_person: person.RegistPerson) :
+    print("server in")
+    return person.create_person(new_person)
 
 @app.post("/api/identify")
 async def identify_person(person: rest_models.IdentifyPerson) :

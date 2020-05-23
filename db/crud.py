@@ -87,24 +87,24 @@ def get_person(person_id: str, db: Session):
 def get_persons(db: Session, skip: int = 0, limit: int = 1000):
     return db.query(db_models.Person).offset(skip).limit(limit).all()
 
-def create_person(person: person.RegistPerson, db: Session):
-    new_person = db_models.Person(person_id=person.person_id, person_name=person.person_name)
+def create_person(person: person.RegistPerson, person_hash:str, db: Session):
+    new_person = db_models.Person(person_hash=person_hash, group_id=person.group_id, person_id=person.person_id, person_name=person.person_name)
     db.add(new_person)
     db.commit()
     db.refresh(new_person)
     return new_person
 
 # img ######################################################
-def get_max_img_id(person_id: str, db: Session):
+def get_max_img_id(person_hash: str, db: Session):
     table = db_models.Img
     max_img_id = 0
-    max_img = db.query(table).filter(table.person_id == person_id).order_by(table.img_id.desc()).first()
+    max_img = db.query(table).filter(table.person_hash == person_hash).order_by(table.img_id.desc()).first()
     if not max_img is None : # 
         max_img_id = max_img.img_id + 1
     return max_img_id
 
-def create_img(person_id: str, max_img_id:int, db: Session):
-    new_img = db_models.Img(person_id=person_id, img_id=max_img_id)
+def create_img(person_hash: str, max_img_id:int, db: Session):
+    new_img = db_models.Img(person_hash=person_hash, img_id=max_img_id)
     db.add(new_img)
     db.commit()
     db.refresh(new_img)
