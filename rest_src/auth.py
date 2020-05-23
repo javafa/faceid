@@ -1,5 +1,6 @@
 import jwt
 from datetime import datetime, timedelta
+from email_validator import validate_email, EmailNotValidError
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from fastapi import Depends, FastAPI, HTTPException, status
 from jwt import PyJWTError
@@ -48,12 +49,19 @@ class SignIn(BaseModel):
 # signup
 def regist(signup: SignUp) :
     try :
+        validate_email(signup.user_id)
+        passwd_result = stringutils.passwd_validator(signup.passwd)
+        if not passwd_result["result"] :
+            return passwd_result
+
         with session_scope() as db:
             if crud.get_user_by_user_id(signup.user_id, db) is None:
                 signup.passwd = get_password_hash(signup.passwd)
                 result = crud.create_user(signup, db)
             else:
                 return {"result":False, "detail":"can not use this email!"}
+    except EmailNotValidError as e:
+        return {"result":False, "detail":"user_id is not valid"}
     except exc.SQLAlchemyError as error:
         print("signup error", error)
         return {"result":False, "detail":"could not sign-up!"}
@@ -63,12 +71,18 @@ def regist(signup: SignUp) :
 #signin
 def signin(signin:SignIn):
     try :
+        validate_email(signin.user_id)
+        # passwd_result = stringutils.passwd_validator(signin.passwd)
+        # if not passwd_result["result"] :
+        #     return passwd_result
         result = login_for_access_token(signin)
+    except EmailNotValidError as e:
+        return {"result":False, "detail":"user_id is not valid"}
     except exc.SQLAlchemyError as error:
         print("signin error", error)
         return {"result":False, "detail":"could not sign-in!"}
 
-    return result
+    return {"result":True, "detail":result}
 
 # user
 def verify_password(plain_password, hashed_password):
@@ -76,6 +90,21 @@ def verify_password(plain_password, hashed_password):
 
 def get_password_hash(password):
     return pwd_context.hash(password)
+
+def available_user_id(user_id:str):
+    try :
+        validate_email(user_id)
+    except EmailNotValidError as e:
+        return {"result":False, "detail":"check your email address!"}
+
+    with session_scope() as db:
+        user = crud.get_user_by_user_id(user_id,db)
+        print("get user===>", user)
+        if user is None:
+            return {"result":True, "detail":"ok"}
+
+    return {"result":False, "detail":"user_id is not valid"}
+
 
 # token
 def create_access_token(*, data: dict, expires_delta: timedelta = None):
@@ -97,21 +126,24 @@ def check_token(token: str):
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        user_id: str = payload.get("sub")
-        print("check_token","user_id", user_id)
-        if user_id is None:
+        user_hash = get_user_hash_from_token(token)
+        if user_hash is None:
             raise credentials_exception
     except PyJWTError:
         raise credentials_exception
-
     with session_scope() as db:
-        user = crud.get_user_by_user_id(user_id, db)
+        user = crud.get_user_by_user_hash(user_hash, db)
         db.expunge_all()
-    print("check_token","user", user)
+
     if user is None:
         raise credentials_exception
     return user
+
+def get_user_hash_from_token(token:str):
+    payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+    user_hash: str = payload.get("sub")
+    return user_hash
+
 
 def get_current_active_user(token: str = Depends(check_token)):
     if token.disabled:
@@ -132,7 +164,6 @@ def login_for_access_token(signin: SignIn):
     with session_scope() as db:
         user = authenticate_user(signin, db)
         db.expunge_all()
-
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -141,7 +172,7 @@ def login_for_access_token(signin: SignIn):
         )
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
-        data={"sub": user.user_id}, expires_delta=access_token_expires
+        data={"sub": user.user_hash}, expires_delta=access_token_expires
     )
 
     return {"access_token": access_token, "token_type": "bearer"}

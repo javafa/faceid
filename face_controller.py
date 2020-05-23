@@ -27,11 +27,12 @@ faceRecog = faceRecognizer(threshold=2.0, model_path=mobilefacenet_path,
                                 facebank_path=face_database, embedding_size=512, device=device)
 
 ## 1. controll group directory
-def create_group(group_id:str):
-    print("create group", group_id)
+def create_group(group_hash:str):
+    make_dir(face_database+""+group_hash)
+    print("create group dir", group_hash)
 
-def remove_group(group_id:str):
-    print("remove group", group_id)
+def remove_group(group_hash:str):
+    print("remove group", group_hash)
 
 ## 2. regist face
 def regist_with_align(img:Image, object_id:str, img_id:str):

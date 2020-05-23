@@ -4,7 +4,7 @@ from sqlalchemy import Column, ForeignKey, Integer, String, Boolean, DateTime
 from sqlalchemy.orm import relationship
 from .database import Base
 
-# User
+# User 
 class User(Base):
     __tablename__   = "user"
     no              = Column(Integer, primary_key=True, autoincrement=True)
@@ -30,8 +30,8 @@ class GroupOfUser(Base):
     __tablename__ = "group_of_user"
     no            = Column(Integer, primary_key=True, autoincrement=True)
     user_hash     = Column(String(64), ForeignKey("user.user_hash"), nullable=False, index=True)
-    group_id      = Column(String(64), ForeignKey("group.group_id"), index=True, nullable=False)
-    attended      = Column(DateTime, default=datetime.datetime.utcnow)
+    group_id      = Column(String(64), index=True, nullable=False)
+    created       = Column(DateTime, default=datetime.datetime.utcnow)
 
 # Person
 class Person(Base):

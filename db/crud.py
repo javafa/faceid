@@ -3,17 +3,22 @@ from fastapi import Depends
 from sqlalchemy.orm import Session
 
 from rest_src import rest_models
-from rest_src import auth, person
+from rest_src import auth, person, group
 
 from utils import stringutils
+import pandas as pd
 
-# user
+# user ######################################################
 def get_user_by_user_id(user_id: str, db: Session):
     table = db_models.User
     return db.query(table).filter(table.user_id == user_id).first()
 
+def get_user_by_user_hash(user_hash: str, db: Session):
+    table = db_models.User
+    return db.query(table).filter(table.user_hash == user_hash).first()
+
 def create_user(user: auth.SignUp, db: Session):
-    hashed_user_id = stringutils.generateHashCode(user.user_id + user.user_name + user.passwd)
+    hashed_user_id = stringutils.generate_user_hash(user.user_id)
     new_user = db_models.User(user_id=user.user_id, user_name=user.user_name, passwd=user.passwd, user_hash=hashed_user_id)
     db.add(new_user)
     return new_user
@@ -23,7 +28,39 @@ def get_user(user: auth.SignIn, db: Session):
     user = db.query(table).filter(table.user_id == user.user_id).first()
     return user
 
-# role group
+# group = company group ######################################################
+def create_group(group_id:str, group_name:str, owner_hash:str, db: Session):
+    new_group = db_models.Group(group_id=group_id, group_name=group_name, owner_hash=owner_hash)
+    db.add(new_group)
+    return new_group
+
+def get_own_groups(user_hash:str, db: Session):
+    table = db_models.Group
+    return db.query(table).filter(table.owner_hash==user_hash).all()
+
+def delete_group(group_id:str, owner_hash:str, db:Session):
+    table = db_models.Group
+    group = db.query(table).filter(table.group_id == group_id, table.owner_hash == owner_hash).first()
+    if not group is None:
+        db.delete(group)
+        db.commit()
+    return group
+
+# user's group ######################################################
+def user_to_group(group_id: group.Group, user_hash:str, db: Session):
+    new_group_of_user = db_models.GroupOfUser(group_id=group_id, user_hash=user_hash)
+    db.add(new_group_of_user)
+    return new_group_of_user
+
+def get_my_groups(user_hash:str, db: Session):
+    users = db_models.GroupOfUser
+    groups = db_models.Group
+    resultset = db.query(groups) \
+            .join(users, groups.group_id == users.group_id) \
+            .filter(users.user_hash == user_hash).all()
+    return resultset
+
+# role group ######################################################
 def get_role(role_id: str, db: Session):
     table = db_models.Role
     return db.query(table).filter(table.role_id == role_id).first()
@@ -38,7 +75,11 @@ def create_role(role: rest_models.Role, db: Session):
     db.refresh(new_role)
     return new_role
 
-# person
+# person ######################################################
+def get_person_count(group_id: str, db: Session):
+    table = db_models.Person
+    return db.query(table).filter(table.group_id == group_id).count()
+
 def get_person(person_id: str, db: Session):
     table = db_models.Person
     return db.query(table).filter(table.person_id == person_id).first()
@@ -53,7 +94,7 @@ def create_person(person: person.RegistPerson, db: Session):
     db.refresh(new_person)
     return new_person
 
-# img
+# img ######################################################
 def get_max_img_id(person_id: str, db: Session):
     table = db_models.Img
     max_img_id = 0
@@ -69,7 +110,7 @@ def create_img(person_id: str, max_img_id:int, db: Session):
     db.refresh(new_img)
     return new_img
 
-# roles of person
+# roles of person ######################################################
 def get_roles_by_person_id(person_id: str, db: Session):
     table = db_models.RoleOfPerson
     return db.query(table).filter(table.person_id == person_id).all()
@@ -84,6 +125,7 @@ def allow_role_to_person(allow:rest_models.AllowRole, db: Session):
 def delete_role_of_person(person_id: str, role_id: str, db: Session):
     table = db_models.RoleOfPerson
     role = db.query(table).filter(table.person_id == person_id, table.role_id == role_id).first()
-    db.delete(role)
-    db.commit()
+    if not role is None:
+        db.delete(role)
+        db.commit()
     return role

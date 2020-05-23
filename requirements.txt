@@ -12,6 +12,7 @@ tqdm
 
 fastapi
 uvicorn
+email_validator
 aiofiles
 sqlalchemy
 mysql-connector-python

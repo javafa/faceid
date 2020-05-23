@@ -2,10 +2,6 @@ from pydantic import BaseModel
 from typing import List
 
 # Person Group
-class PersonGroup(BaseModel): # auto create default group after user's email confirmed
-    person_group_id: str # hash(user_id + timestamp)
-    person_group_name: str # Default Group
-    user_id: str = None # in cookie
 
 # role
 class Role(BaseModel):
