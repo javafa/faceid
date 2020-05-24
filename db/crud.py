@@ -84,8 +84,9 @@ def get_person(person_id: str, db: Session):
     table = db_models.Person
     return db.query(table).filter(table.person_id == person_id).first()
 
-def get_persons(db: Session, skip: int = 0, limit: int = 1000):
-    return db.query(db_models.Person).offset(skip).limit(limit).all()
+def get_persons(group_id:str, db: Session, skip: int = 0, limit: int = 1000):
+    table = db_models.Person
+    return db.query(table).filter(table.group_id == group_id).offset(skip).limit(limit).all()
 
 def create_person(person: person.RegistPerson, person_hash:str, db: Session):
     new_person = db_models.Person(person_hash=person_hash, group_id=person.group_id, person_id=person.person_id, person_name=person.person_name)

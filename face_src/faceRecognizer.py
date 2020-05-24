@@ -85,7 +85,7 @@ class faceRecognizer:
 
         group_path = self.facebank_path + group_id
 
-        if len(os.listdir(self.group_path)) > 0:
+        if len(os.listdir(group_path)) > 0:
             facebank_embeddings, facebank_names = self.make_facebank(group_id) 
 
             diff = emb.unsqueeze(-1) - facebank_embeddings.transpose(1,0).unsqueeze(0)

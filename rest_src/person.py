@@ -29,9 +29,14 @@ class RegistPerson(BaseModel):
     person_name : str = None
     img : str # base64 bytes string
 
-def get_persons():
+# identify face in a group
+class SnapImage(BaseModel):
+    group_id: str
+    img : str # base64 bytes string
+
+def get_persons(group_id:str):
     with session_scope() as db:
-        result = crud.get_persons(db)
+        result = crud.get_persons(group_id, db)
     return result
 
 def create_person(new_person: RegistPerson) :
@@ -69,6 +74,18 @@ def create_person(new_person: RegistPerson) :
 
     return {"result":result["result"], "detail":result["description"]}
 
-async def add_person(person:RegistPerson):
+def add_person(person:RegistPerson):
     print("add person")
 
+def identify(snap_img: SnapImage) :
+    try: 
+        img = Image.open(io.BytesIO(base64.b64decode(snap_img.img))).convert("RGB")
+        print("person identify img ok")
+        result = face_controller.identify_with_align(img, snap_img.group_id)
+        return result
+    except Exception as e:
+        print("identify error", e)
+        return {"result":False, "detail":e}
+    
+    
+    

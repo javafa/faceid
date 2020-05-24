@@ -29,8 +29,4 @@ class AllowRole(BaseModel):
     role_type: str # role or group
     role_or_group_id: str
 
-# identify face in a group
-class IdentifyPerson(BaseModel):
-    group_id: str
-    role_id: str
-    img : str # base64 bytes string
+

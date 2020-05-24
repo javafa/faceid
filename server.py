@@ -164,8 +164,8 @@ async def allow_roles(allow_role: rest_models.AllowRole) :
 
 ## Person
 @app.get("/api/persons")
-def get_persons(auth: str = Depends(check_token)):
-    results = person.get_persons()
+def get_persons(group_id:str, auth: str = Depends(check_token)):
+    results = person.get_persons(group_id)
     return {"result":True, "detail": results}
 
 @app.post("/api/person")
@@ -174,13 +174,8 @@ async def create_person(new_person: person.RegistPerson) :
     return person.create_person(new_person)
 
 @app.post("/api/identify")
-async def identify_person(person: rest_models.IdentifyPerson) :
-    try: 
-        img = Image.open(io.BytesIO(base64.b64decode(person.img))).convert("RGB")
-    except:
-        return {"result":False, "detail":"base64 decoding error"}
-    result = face_controller.identify_with_align(img, person.role_id)
-
+async def identify(snap_img: person.SnapImage) :
+    result = person.identify(snap_img)
     return result
 
 @app.get("/test", status_code=307, response_class=Response)

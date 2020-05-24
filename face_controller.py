@@ -86,7 +86,6 @@ def identify_with_align(img:Image, group_id:str, limit=10):
         del(result_dict['object_id_list'][-1])
 
     result_dict['count'] = len(result_dict['object_id_list'])
-    
     activate = True
     
     return result_dict
