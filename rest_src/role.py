@@ -16,6 +16,11 @@ class Role(BaseModel):
     role_id: str
     role_name: str
 
+class AllowRole(BaseModel):
+    person_id: str
+    role_type: str # role or group
+    role_or_group_id: str
+
 @contextmanager
 def session_scope():
     db = SessionLocal()
@@ -34,15 +39,15 @@ def get_roles(group_id:str):
             results = crud.get_roles(group_id, db)
             return jsonable_encoder(results)
     except Exception as error:
-        print("group creation error", error)
+        print("list role error", error)
 
     return None
 
-def create_role(new_role:Role)
+def create_role(new_role:Role):
     try :
         with session_scope() as db:
             print("new_role", new_role)
             result = crud.create_role(new_role.group_id, new_role.role_id, new_role.role_name, db)
             return result
-    except exc.SQLAlchemyError as error:
-        return {"result":False, "detail":error}
+    except Exception as error:
+        return str(error)

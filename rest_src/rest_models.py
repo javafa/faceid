@@ -21,9 +21,6 @@ class Person(BaseModel):
     person_id: str
     person_name: str = None
 
-class AllowRole(BaseModel):
-    person_id: str
-    role_type: str # role or group
-    role_or_group_id: str
+
 
 

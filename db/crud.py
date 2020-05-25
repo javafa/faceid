@@ -2,8 +2,8 @@ from . import db_models
 from fastapi import Depends
 from sqlalchemy.orm import Session
 
-from rest_src import rest_models
 from rest_src import auth, person, group
+from rest_src import role as r
 
 from utils import stringutils
 import pandas as pd
@@ -61,12 +61,13 @@ def get_my_groups(user_hash:str, db: Session):
     return resultset
 
 # role & role group ######################################################
-def get_role(role_id: str, db: Session):
+def get_role(group_id:str, role_id: str, db: Session):
     table = db_models.Role
     return db.query(table).filter(table.role_id == role_id).first()
 
-def get_roles(db: Session, skip: int = 0, limit: int = 1000):
-    return db.query(db_models.Role).offset(skip).limit(limit).all()
+def get_roles(group_id:str, db: Session, skip: int = 0, limit: int = 1000):
+    table = db_models.Role
+    return db.query(table).filter(table.group_id == group_id).offset(skip).limit(limit).all()
 
 def create_role(group_id:str, role_id:str, role_name:str, db: Session):
     new_role = db_models.Role(group_id=group_id, role_id=role_id, role_name=role_name)
@@ -116,7 +117,7 @@ def get_roles_by_person_id(person_id: str, db: Session):
     table = db_models.RoleOfPerson
     return db.query(table).filter(table.person_id == person_id).all()
 
-def allow_role_to_person(allow:rest_models.AllowRole, db: Session):
+def allow_role_to_person(allow:r.AllowRole, db: Session):
     new_role = db_models.RoleOfPerson(person_id=allow.person_id, role_id=allow.role_id)
     db.add(new_role)
     db.commit()

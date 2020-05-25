@@ -14,7 +14,8 @@ from pydantic import BaseModel
 
 from db import crud, db_models
 from db.database import engine
-from rest_src import rest_models, auth, user, group, person, role, device
+from rest_src import rest_models, auth, user, group, person, device
+from rest_src import role as r
 import face_controller
 from utils import stringutils
 
@@ -130,18 +131,20 @@ def remove_group(group_id:str, auth: str = Depends(check_token)):
 
 ## Role
 @app.post("/api/role")
-async def create_role(new_role: role.Role) :
-    role.
+async def create_role(new_role: r.Role, auth: str = Depends(check_token)) :
+    print("create role in")
+    result = r.create_role(new_role)
+    print("create role result", result)
     return {"result":True, "detail": result}
 
 @app.get("/api/roles/{group_id}")
 def get_roles(group_id:str, auth: str = Depends(check_token)) :
-    results = role.get_roles(group_id)
+    results = r.get_roles(group_id)
     print("roles=",results)
     return {"result":True, "detail": results}
 
 @app.post("/api/allow_role")
-async def allow_roles(allow_role: rest_models.AllowRole) :
+async def allow_roles(allow_role: r.AllowRole) :
     # exist user
     if crud.get_person( allow_role.person_id) is None :
         return {"result":False, "detail": "person not exist!"}
