@@ -35,6 +35,12 @@ class SnapImage(BaseModel):
     group_id: str
     img : str # base64 bytes string
 
+def get_person_by_hash(person_hash:str):
+    with session_scope() as db:
+        result = crud.get_person_by_hash(person_hash, db)
+        print("result", result)
+        return jsonable_encoder(result)
+
 def get_persons(group_id:str):
     with session_scope() as db:
         result = crud.get_persons(group_id, db)

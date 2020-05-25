@@ -17,9 +17,10 @@ class Role(BaseModel):
     role_name: str
 
 class AllowRole(BaseModel):
-    person_id: str
+    group_id:str
+    person_hash: str
     role_type: str # role or group
-    role_or_group_id: str
+    role_id: str
 
 @contextmanager
 def session_scope():
@@ -33,6 +34,15 @@ def session_scope():
     finally:
         db.close()
 
+def get_role(group_id:str, role_id:str):
+    try :
+        with session_scope() as db:
+            result = crud.get_role(group_id, role_id, db)
+            return result
+    except Exception as error:
+        print("get role error", error)
+    return None
+
 def get_roles(group_id:str):
     try :
         with session_scope() as db:
@@ -40,7 +50,15 @@ def get_roles(group_id:str):
             return jsonable_encoder(results)
     except Exception as error:
         print("list role error", error)
+    return None
 
+def get_roles_by_person_hash(person_hash:str) :
+    try :
+        with session_scope() as db:
+            results = crud.get_roles_by_person_hash(person_hash, db)
+            return results
+    except Exception as error:
+        print("get_roles error", error)
     return None
 
 def create_role(new_role:Role):
@@ -51,3 +69,12 @@ def create_role(new_role:Role):
             return result
     except Exception as error:
         return str(error)
+
+def allow_role_to_person(allow:AllowRole):
+    try :
+        with session_scope() as db:
+            results = crud.allow_role_to_person(allow, db)
+            return results
+    except Exception as error:
+        print("allow role error", error)
+    return None

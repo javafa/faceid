@@ -143,23 +143,6 @@ def get_roles(group_id:str, auth: str = Depends(check_token)) :
     print("roles=",results)
     return {"result":True, "detail": results}
 
-@app.post("/api/allow_role")
-async def allow_roles(allow_role: r.AllowRole) :
-    # exist user
-    if crud.get_person( allow_role.person_id) is None :
-        return {"result":False, "detail": "person not exist!"}
-    # exist role
-    if crud.get_role( allow_role.role_id) is None :
-        return {"result":False, "detail": "role not exist!"}
-    # already allowed
-    roles = crud.get_roles_by_person_id(allow_role.person_id)
-    for role in roles :
-        if role.role_id == allow_role.role_id :
-            return {"result":False, "detail": "already have the same role!"}
-
-    results = crud.allow_role_to_person(allow_role)
-    return {"result":True, "detail": results}
-
 ## Person
 @app.get("/api/persons/{group_id}")
 async def get_persons(group_id:str, auth: str = Depends(check_token)):
@@ -175,6 +158,27 @@ async def create_person(new_person: person.RegistPerson) :
 async def identify(snap_img: person.SnapImage) :
     result = person.identify(snap_img)
     return result
+
+@app.post("/api/allow_role")
+async def allow_roles(allow_role: r.AllowRole) :
+    # exist user
+    if person.get_person_by_hash( allow_role.person_hash) is None :
+        return {"result":False, "detail": "person not exist!"}
+    # exist role
+    if r.get_role( allow_role.group_id, allow_role.role_id) is None :
+        return {"result":False, "detail": "role not exist!"}
+    # already allowed
+    roles = r.get_roles_by_person_hash(allow_role.person_hash)
+
+    if not roles is None:
+        for role in roles :
+            if role.role_id == allow_role.role_id :
+                return {"result":False, "detail": "already have the same role!"}
+
+    results = r.allow_role_to_person(allow_role)
+    return {"result":True, "detail": results}
+
+
 
 @app.get("/test", status_code=307, response_class=Response)
 def api_test_in_browser():

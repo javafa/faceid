@@ -46,9 +46,8 @@ class RoleOfPerson(Base):
     __tablename__ = "role_of_person"
     no            = Column(Integer, primary_key=True, autoincrement=True)
     person_hash   = Column(String(64), ForeignKey("person.person_hash"), index=True, nullable=False)
-    role_type     = Column(String(10), nullable=False, default="role") # role or role_group
-    role_id       = Column(String(64), ForeignKey("role.role_id"), nullable=True)
-    role_group_id = Column(String(64), ForeignKey("role_group.role_group_id"), nullable=True)
+    role_type     = Column(String(10), nullable=False, default="role") # role or group
+    role_id       = Column(String(64), nullable=False) # role of role_group_id
 
 # Person Images
 class Img(Base):
@@ -69,8 +68,8 @@ class Role(Base):
 class RoleGroup(Base):
     __tablename__   = "role_group"
     no              = Column(Integer, primary_key=True, autoincrement=True)
-    group_id        = Column(String(64), ForeignKey("group.group_id"), index=True, nullable=False)
-    role_group_id   = Column(String(64), unique=True, index=True, nullable=False) # auto creation
+    group_id        = Column(String(64), ForeignKey("group.group_id"), index=True, nullable=False) # company group
+    role_group_id   = Column(String(64), index=True, nullable=False) # role_group
     role_group_name = Column(String(50), index=True)
 
 class CommandAfterConfirm(Base):

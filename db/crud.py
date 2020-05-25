@@ -63,11 +63,15 @@ def get_my_groups(user_hash:str, db: Session):
 # role & role group ######################################################
 def get_role(group_id:str, role_id: str, db: Session):
     table = db_models.Role
-    return db.query(table).filter(table.role_id == role_id).first()
+    return db.query(table).filter(table.group_id == group_id, table.role_id == role_id).first()
 
 def get_roles(group_id:str, db: Session, skip: int = 0, limit: int = 1000):
     table = db_models.Role
     return db.query(table).filter(table.group_id == group_id).offset(skip).limit(limit).all()
+
+def get_roles_by_person_hash(person_hash:str, db: Session, skip: int = 0, limit: int = 1000):
+    table = db_models.RoleOfPerson
+    return db.query(table).filter(table.person_hash == person_hash).offset(skip).limit(limit).all()
 
 def create_role(group_id:str, role_id:str, role_name:str, db: Session):
     new_role = db_models.Role(group_id=group_id, role_id=role_id, role_name=role_name)
@@ -84,6 +88,10 @@ def get_person_count(group_id: str, db: Session):
 def get_person(group_id:str, person_id: str, db: Session):
     table = db_models.Person
     return db.query(table).filter(table.group_id == group_id, table.person_id == person_id).first()
+
+def get_person_by_hash(person_hash:str, db: Session):
+    table = db_models.Person
+    return db.query(table).filter(table.person_hash == person_hash).first()
 
 def get_persons(group_id:str, db: Session, skip: int = 0, limit: int = 1000):
     table = db_models.Person
@@ -118,7 +126,7 @@ def get_roles_by_person_id(person_id: str, db: Session):
     return db.query(table).filter(table.person_id == person_id).all()
 
 def allow_role_to_person(allow:r.AllowRole, db: Session):
-    new_role = db_models.RoleOfPerson(person_id=allow.person_id, role_id=allow.role_id)
+    new_role = db_models.RoleOfPerson(person_hash=allow.person_hash, role_id=allow.role_id)
     db.add(new_role)
     db.commit()
     db.refresh(new_role)
