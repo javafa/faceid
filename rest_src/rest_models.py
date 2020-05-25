@@ -4,10 +4,7 @@ from typing import List
 # Person Group
 
 # role
-class Role(BaseModel):
-    group_id: str
-    role_id: str = None # auto creation
-    role_name: str
+
 
 class RoleGroup(BaseModel):
     group_id: str

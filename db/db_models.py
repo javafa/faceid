@@ -63,7 +63,7 @@ class Role(Base):
     __tablename__ = "role"
     no            = Column(Integer, primary_key=True, autoincrement=True)
     group_id      = Column(String(64), ForeignKey("group.group_id"), index=True, nullable=False)
-    role_id       = Column(String(64), unique=True, index=True, nullable=False) # auto creation
+    role_id       = Column(String(64), index=True, nullable=False)
     role_name     = Column(String(50), index=True) # attendence, 301 gate etc.
 
 class RoleGroup(Base):

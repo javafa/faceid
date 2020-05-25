@@ -60,7 +60,7 @@ def get_my_groups(user_hash:str, db: Session):
             .filter(users.user_hash == user_hash).all()
     return resultset
 
-# role group ######################################################
+# role & role group ######################################################
 def get_role(role_id: str, db: Session):
     table = db_models.Role
     return db.query(table).filter(table.role_id == role_id).first()
@@ -68,8 +68,8 @@ def get_role(role_id: str, db: Session):
 def get_roles(db: Session, skip: int = 0, limit: int = 1000):
     return db.query(db_models.Role).offset(skip).limit(limit).all()
 
-def create_role(role: rest_models.Role, db: Session):
-    new_role = db_models.Role(role_id=role.role_id, role_name=role.role_name)
+def create_role(group_id:str, role_id:str, role_name:str, db: Session):
+    new_role = db_models.Role(group_id=group_id, role_id=role_id, role_name=role_name)
     db.add(new_role)
     db.commit()
     db.refresh(new_role)
@@ -80,9 +80,9 @@ def get_person_count(group_id: str, db: Session):
     table = db_models.Person
     return db.query(table).filter(table.group_id == group_id).count()
 
-def get_person(person_id: str, db: Session):
+def get_person(group_id:str, person_id: str, db: Session):
     table = db_models.Person
-    return db.query(table).filter(table.person_id == person_id).first()
+    return db.query(table).filter(table.group_id == group_id, table.person_id == person_id).first()
 
 def get_persons(group_id:str, db: Session, skip: int = 0, limit: int = 1000):
     table = db_models.Person

@@ -130,18 +130,13 @@ def remove_group(group_id:str, auth: str = Depends(check_token)):
 
 ## Role
 @app.post("/api/role")
-async def new_role(role: rest_models.Role) :
-    try :
-        print("new_role", role)
-        result = crud.create_role(role)
-    except exc.SQLAlchemyError as error:
-        return {"result":False, "detail":error}
-
+async def create_role(new_role: role.Role) :
+    role.
     return {"result":True, "detail": result}
 
-@app.get("/api/roles")
-def get_roles():
-    results = crud.get_roles()
+@app.get("/api/roles/{group_id}")
+def get_roles(group_id:str, auth: str = Depends(check_token)) :
+    results = role.get_roles(group_id)
     print("roles=",results)
     return {"result":True, "detail": results}
 
@@ -163,8 +158,8 @@ async def allow_roles(allow_role: rest_models.AllowRole) :
     return {"result":True, "detail": results}
 
 ## Person
-@app.get("/api/persons")
-def get_persons(group_id:str, auth: str = Depends(check_token)):
+@app.get("/api/persons/{group_id}")
+async def get_persons(group_id:str, auth: str = Depends(check_token)):
     results = person.get_persons(group_id)
     return {"result":True, "detail": results}
 

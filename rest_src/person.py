@@ -1,3 +1,4 @@
+from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel
 from db import crud, db_models
 from db.database import SessionLocal
@@ -37,7 +38,8 @@ class SnapImage(BaseModel):
 def get_persons(group_id:str):
     with session_scope() as db:
         result = crud.get_persons(group_id, db)
-    return result
+        print("result", result)
+        return jsonable_encoder(result)
 
 def create_person(new_person: RegistPerson) :
     max_img_id = 0
