@@ -50,7 +50,7 @@ def get_persons(group_id:str):
 def create_person(new_person: RegistPerson) :
     max_img_id = 0
     # db insert person
-    result = {}
+    result = {"result":False, "detail":""}
     print("new_person person==>")
     try :
         with session_scope() as db:
@@ -76,11 +76,10 @@ def create_person(new_person: RegistPerson) :
             if result["result"] :
                 db_img = crud.create_img(person_hash, max_img_id, db)
     except Exception as e:
-        print("new_person exception", e)
-        result["result"] = False
-        result["description"] = e
+        print("create_person exception", e)
+        result["detail"] = e
 
-    return {"result":result["result"], "detail":result["description"]}
+    return result
 
 def add_person(person:RegistPerson):
     print("add person")

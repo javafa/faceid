@@ -56,6 +56,7 @@ def get_roles_by_person_hash(person_hash:str) :
     try :
         with session_scope() as db:
             results = crud.get_roles_by_person_hash(person_hash, db)
+            db.expunge_all()
             return results
     except Exception as error:
         print("get_roles error", error)
@@ -64,11 +65,13 @@ def get_roles_by_person_hash(person_hash:str) :
 def create_role(new_role:Role):
     try :
         with session_scope() as db:
-            print("new_role", new_role)
+            role = crud.get_role(new_role.group_id, new_role.role_id, db)
+            if not role is None:
+                return {"result":False, "detail": "already have the same role!"}
             result = crud.create_role(new_role.group_id, new_role.role_id, new_role.role_name, db)
-            return result
+            return {"result":True, "detail": "ok"}
     except Exception as error:
-        return str(error)
+        return {"result":False, "detail": str(error)}
 
 def allow_role_to_person(allow:AllowRole):
     try :

@@ -83,7 +83,8 @@ def create_role(group_id:str, role_id:str, role_name:str, db: Session):
 # person ######################################################
 def get_person_count(group_id: str, db: Session):
     table = db_models.Person
-    return db.query(table).filter(table.group_id == group_id).count()
+    result = db.query(table).filter(table.group_id == group_id).count()
+    return result
 
 def get_person(group_id:str, person_id: str, db: Session):
     table = db_models.Person

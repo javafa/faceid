@@ -41,7 +41,7 @@ class SignUp(BaseModel):
     user_id: str # email
     user_name: str
     passwd: str # hashed
-    
+
 class SignIn(BaseModel):
     user_id: str # email
     passwd: str # hashed
@@ -49,7 +49,9 @@ class SignIn(BaseModel):
 # signup
 def regist(signup: SignUp) :
     try :
-        validate_email(signup.user_id)
+        user_id_result = available_user_id(signup.user_id)
+        if not user_id_result["result"]:
+            return user_id_result
         passwd_result = stringutils.passwd_validator(signup.passwd)
         if not passwd_result["result"] :
             return passwd_result
@@ -60,8 +62,10 @@ def regist(signup: SignUp) :
                 result = crud.create_user(signup, db)
             else:
                 return {"result":False, "detail":"can not use this email!"}
+
     except EmailNotValidError as e:
         return {"result":False, "detail":"user_id is not valid"}
+
     except exc.SQLAlchemyError as error:
         print("signup error", error)
         return {"result":False, "detail":"could not sign-up!"}
@@ -95,7 +99,7 @@ def available_user_id(user_id:str):
     try :
         validate_email(user_id)
     except EmailNotValidError as e:
-        return {"result":False, "detail":"check your email address!"}
+        return {"result":False, "detail":"check your ID what should be email address!"}
 
     with session_scope() as db:
         user = crud.get_user_by_user_id(user_id,db)
@@ -104,7 +108,6 @@ def available_user_id(user_id:str):
             return {"result":True, "detail":"ok"}
 
     return {"result":False, "detail":"user_id is not valid"}
-
 
 # token
 def create_access_token(*, data: dict, expires_delta: timedelta = None):

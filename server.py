@@ -94,7 +94,7 @@ def check_token(token:str = Depends(oauth2_scheme)):
 
 ## Group
 @app.post("/api/group")
-async def new_group(new_group: group.NewGroup, auth: str = Depends(check_token)) :
+async def create_group(new_group: group.NewGroup, auth: str = Depends(check_token)) :
     try :
         owner_hash = auth.user_hash
         group_id = group.create_group(new_group.group_name, owner_hash)
@@ -132,10 +132,8 @@ def remove_group(group_id:str, auth: str = Depends(check_token)):
 ## Role
 @app.post("/api/role")
 async def create_role(new_role: r.Role, auth: str = Depends(check_token)) :
-    print("create role in")
     result = r.create_role(new_role)
-    print("create role result", result)
-    return {"result":True, "detail": result}
+    return result
 
 @app.get("/api/roles/{group_id}")
 def get_roles(group_id:str, auth: str = Depends(check_token)) :
@@ -150,17 +148,17 @@ async def get_persons(group_id:str, auth: str = Depends(check_token)):
     return {"result":True, "detail": results}
 
 @app.post("/api/person")
-async def create_person(new_person: person.RegistPerson) :
+async def create_person(new_person: person.RegistPerson, auth: str = Depends(check_token)) :
     print("server in")
     return person.create_person(new_person)
 
 @app.post("/api/identify")
-async def identify(snap_img: person.SnapImage) :
+async def identify(snap_img: person.SnapImage, auth: str = Depends(check_token)) :
     result = person.identify(snap_img)
     return result
 
 @app.post("/api/allow_role")
-async def allow_roles(allow_role: r.AllowRole) :
+async def allow_roles(allow_role: r.AllowRole, auth: str = Depends(check_token)) :
     # exist user
     if person.get_person_by_hash( allow_role.person_hash) is None :
         return {"result":False, "detail": "person not exist!"}
@@ -171,9 +169,9 @@ async def allow_roles(allow_role: r.AllowRole) :
     roles = r.get_roles_by_person_hash(allow_role.person_hash)
 
     if not roles is None:
-        for role in roles :
-            if role.role_id == allow_role.role_id :
-                return {"result":False, "detail": "already have the same role!"}
+        for item in roles :
+            if item.role_id == allow_role.role_id :
+                return {"result":False, "detail": "the person has the same role!"}
 
     results = r.allow_role_to_person(allow_role)
     return {"result":True, "detail": results}
