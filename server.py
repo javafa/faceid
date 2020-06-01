@@ -14,7 +14,7 @@ from pydantic import BaseModel
 
 # from db import crud, db_models
 # from db.database import engine
-from rest_src import group, person
+# from rest_src import rest_models, auth, user, group, person, device
 # from rest_src import role as r
 # import face_controller
 # from utils import stringutils
@@ -52,44 +52,6 @@ app = FastAPI(
 @app.get("/api/status")
 async def check_status():
     return {"status":"running"}
-
-@app.post("/api/person")
-async def create_person(new_person: person.RegistPerson) :
-    return person.create_person(new_person)
-
-@app.post("/api/identify")
-async def identify(snap_img: person.SnapImage) :
-    result = person.identify(snap_img)
-    return result
-
-@app.delete("/api/person/{person_hash}")
-async def remove_person(person_hash:str) :
-    return person.delete_person(person_hash)
-
-@app.post("/api/group")
-async def create_group(new_group: group.NewGroup) :
-    try :
-        owner_hash = auth.user_hash
-        group_id = group.create_group(new_group.group_name, owner_hash)
-        if not group_id is None :
-            face_controller.create_group(group_id)
-            return {"result":True, "detail":"ok"}
-    except Exception as error:
-        print("error group creation", error)
-        return {"result":False, "detail":error}
-    
-    return {"result":False, "detail":"creation failed"}
-
-@app.delete("/api/group/{group_id}")
-def remove_group(group_id:str):
-    try :
-        owner_hash = auth.user_hash
-        result = group.delete_group(group_id, owner_hash)
-        return result
-    except Exception as error:
-        print("error group list", error)
-    
-    return {"result":False, "detail": "can not delete the group"}
 
 # @app.get("/api/available/{user_id}")
 # async def available_user_id(user_id):
@@ -156,6 +118,17 @@ def remove_group(group_id:str):
     
 #     return {"result":False, "detail": "can not list my groups"}
 
+# @app.delete("/api/group/{group_id}")
+# def remove_group(group_id:str, auth: str = Depends(check_token)):
+#     try :
+#         owner_hash = auth.user_hash
+#         result = group.delete_group(group_id, owner_hash)
+#         return result
+#     except Exception as error:
+#         print("error group list", error)
+    
+#     return {"result":False, "detail": "can not delete the group"}
+
 # ## Role
 # @app.post("/api/role")
 # async def create_role(new_role: r.Role, auth: str = Depends(check_token)) :
@@ -174,7 +147,14 @@ def remove_group(group_id:str):
 #     results = person.get_persons(group_id)
 #     return {"result":True, "detail": results}
 
+@app.post("/api/person")
+async def create_person(new_person: person.RegistPerson) :
+    return person.create_person(new_person)
 
+@app.post("/api/identify")
+async def identify(snap_img: person.SnapImage) :
+    result = person.identify(snap_img)
+    return result
 
 # @app.post("/api/allow_role")
 # async def allow_roles(allow_role: r.AllowRole, auth: str = Depends(check_token)) :
