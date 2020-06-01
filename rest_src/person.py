@@ -55,7 +55,7 @@ def create_person(new_person: RegistPerson) :
     try :
         with session_scope() as db:
             person_hash = stringutils.generate_person_hash(new_person.group_id, new_person.person_id, new_person.person_name)
-            exist_person = crud.get_person(new_person.person_id, db)
+            exist_person = crud.get_person(new_person.group_id, new_person.person_id, db)
             if exist_person is None:
                 person = crud.create_person(new_person, person_hash, db)
                 print("new_person", person)

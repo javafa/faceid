@@ -153,7 +153,7 @@ async def create_person(new_person: person.RegistPerson, auth: str = Depends(che
     return person.create_person(new_person)
 
 @app.post("/api/identify")
-async def identify(snap_img: person.SnapImage, auth: str = Depends(check_token)) :
+async def identify(snap_img: person.SnapImage) :
     result = person.identify(snap_img)
     return result
 
