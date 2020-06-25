@@ -52,6 +52,7 @@ def create_person(new_person: RegistPerson) :
     # db insert person
     result = {"result":False, "detail":""}
     print("new_person person==>")
+    
     try :
         with session_scope() as db:
             person_hash = stringutils.generate_person_hash(new_person.group_id, new_person.person_id, new_person.person_name)
@@ -89,6 +90,12 @@ def identify(snap_img: SnapImage) :
         img = Image.open(io.BytesIO(base64.b64decode(snap_img.img))).convert("RGB")
         print("person identify img ok")
         result = face_controller.identify_with_align(img, snap_img.group_id)
+        if result["result"] :
+            with session_scope() as db:
+                for item in result["object_id_list"] :
+                    person_hash = item["object_id"]
+                    person = crud.get_person_by_hash(person_hash, db)
+                    item["name"] = person.person_name
         return result
     except Exception as e:
         print("identify error", e)

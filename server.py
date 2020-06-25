@@ -176,13 +176,7 @@ async def allow_roles(allow_role: r.AllowRole, auth: str = Depends(check_token))
     results = r.allow_role_to_person(allow_role)
     return {"result":True, "detail": results}
 
-
-
-@app.get("/test", status_code=307, response_class=Response)
-def api_test_in_browser():
-    return RedirectResponse('/service/test_face_server.html')
-
 if __name__ == '__main__' :
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=7000)
 
 
