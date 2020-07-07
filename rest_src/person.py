@@ -34,6 +34,7 @@ class RegistPerson(BaseModel):
 class SnapImage(BaseModel):
     group_id: str
     img : str # base64 bytes string
+    threshold: float = None
 
 def get_person_by_hash(person_hash:str):
     with session_scope() as db:
@@ -89,7 +90,7 @@ def identify(snap_img: SnapImage) :
     try: 
         img = Image.open(io.BytesIO(base64.b64decode(snap_img.img))).convert("RGB")
         print("person identify img ok")
-        result = face_controller.identify_with_align(img, snap_img.group_id)
+        result = face_controller.identify_with_align(img, snap_img.group_id, snap_img.threshold)
         if result["result"] :
             with session_scope() as db:
                 for item in result["object_id_list"] :

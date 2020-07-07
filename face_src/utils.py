@@ -54,7 +54,7 @@ def align_face(img):
 
         # align image
         facial5points = [[landmark[j], landmark[j+5]] for j in range(5)]
-        warped_face = warp_and_crop_face(np.array(img), facial5points, face_ref_points) #, crop_size=(112,112))
+        warped_face = warp_and_crop_face(np.array(img), facial5points, face_ref_points, crop_size=(112,112))
 
         face_image = Image.fromarray(warped_face)
         

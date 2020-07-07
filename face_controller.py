@@ -65,7 +65,7 @@ def regist_with_align(img:Image, group_id:str, object_id:str, img_id:str):
     return result_dict
 
 ## 3. identify face
-def identify_with_align(img:Image, group_id:str, limit=10):
+def identify_with_align(img:Image, group_id:str, threshold=2.0, limit=10):
     global activate
     activate = False
     result_dict = {}
@@ -80,7 +80,7 @@ def identify_with_align(img:Image, group_id:str, limit=10):
     img.save(face_database + temp_img_name)
 
     result_dict['result'] = True
-    result_dict['object_id_list'] = faceRecog.check_registration(img, group_id)["object_id_list"]
+    result_dict['object_id_list'] = faceRecog.check_registration(img, group_id, threshold)["object_id_list"]
     
     while limit < len(result_dict['object_id_list']):
         del(result_dict['object_id_list'][-1])

@@ -165,7 +165,7 @@ def get_affine_transform_matrix(src_pts, dst_pts):
 def warp_and_crop_face(src_img,
                        facial_pts,
                        reference_pts=None,
-                       crop_size=(96, 112),
+                       crop_size=(112, 112),
                        align_type='smilarity'):
     """
     Function:

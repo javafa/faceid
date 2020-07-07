@@ -71,7 +71,7 @@ class faceRecognizer:
         return embeddings, names
 
 
-    def check_registration(self, face, group_id):
+    def check_registration(self, face, group_id, threshold):
         
         result_dict = {}
         result_dict['object_id_list'] = []
@@ -81,7 +81,7 @@ class faceRecognizer:
         face_tensor = face_tensor.unsqueeze(0)
         emb = self.model(face_tensor)
         
-        print('threshold: ', self.threshold)
+        print('threshold: ', threshold)
 
         group_path = self.facebank_path + group_id
 
@@ -93,8 +93,8 @@ class faceRecognizer:
             dist = torch.sum(torch.pow(diff, 2), dim=1)
             np_dist = np.squeeze(dist.detach().cpu().numpy(), axis=0)
             
-            result_dist = np_dist[np.where(np_dist < self.threshold)]
-            result_names = facebank_names[np.where(np_dist < self.threshold)]
+            result_dist = np_dist[np.where(np_dist < threshold)]
+            result_names = facebank_names[np.where(np_dist < threshold)]
             
             if result_dist.shape[0] > 0:
                 for i in range(result_dist.shape[0]):

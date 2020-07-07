@@ -70,7 +70,7 @@ def regist(signup: SignUp) :
         print("signup error", error)
         return {"result":False, "detail":"could not sign-up!"}
 
-    return {"result":True, "detail": "please check your mailbox and confirm!"}
+    return {"result":True, "detail": "success!"}
 
 #signin
 def signin(signin:SignIn):
@@ -112,11 +112,12 @@ def available_user_id(user_id:str):
 # token
 def create_access_token(*, data: dict, expires_delta: timedelta = None):
     to_encode = data.copy()
-
-    if expires_delta:
-        expire = datetime.utcnow() + expires_delta
-    else:
-        expire = datetime.utcnow() + timedelta(minutes=15)
+    # timeout
+    # if expires_delta:
+    #     expire = datetime.utcnow() + expires_delta
+    # else:
+    #     expire = datetime.utcnow() + timedelta(minutes=15)
+    expire = 0
 
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
