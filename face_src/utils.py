@@ -44,7 +44,9 @@ def align_face(img):
         if num_faces > 1 :
             for i in range(len(bb)) :
                 face_area = face_point[2] * face_point[3]
+
                 bb_area = bb[i][2] * bb[i][3]
+                
                 if face_area < bb_area :
                     face_point = bb[i]
                     landmark = landmarks[i]
