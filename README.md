@@ -7,6 +7,53 @@
 The implementation of popular face recognition algorithms in pytorch framework, including arcface.    
 In this repository, we use a pre-trained MobliefaceNet model.    
 
+## Requirements
+
+### for Face recognizer
+PyQt5
+pillow
+requests
+opencv-python
+bcolz
+matplotlib
+numpy
+pandas
+scikit-learn
+tensorboardX
+tqdm
+
+### for Rest API
+fastapi
+uvicorn
+email_validator
+aiofiles
+sqlalchemy
+mysql-connector-python
+pyjwt
+passlib[bcrypt]
+python-multipart
+
+## Apis
+
+### Identify
+```
+POST /api/identify
+{
+   group_id: str
+   threshold: float = None
+   img : str # base64 bytes string
+}
+```
+### Adding a person
+```
+POST /api/person
+{
+   group_id : str
+   person_id : str
+   person_name : str = None
+   img : str # base64 bytes string
+}
+```
 ## References   
 [wujiyang/Face_Pytorch](https://github.com/wujiyang/Face_Pytorch)   
 [MuggleWang/CosFace_pytorch](https://github.com/MuggleWang/CosFace_pytorch)   
